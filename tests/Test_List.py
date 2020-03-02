@@ -8,7 +8,7 @@ def class_fixture():
 
 
 class Test1:
-    mas = [i for i in range(10)]
+    mas = [i  for i in range(10)][::2]
 
     def test1_1(self):
         errors = []
@@ -19,18 +19,22 @@ class Test1:
                 errors.append(f'{i} not even')
         assert not errors
 
-    def test1_2(self, class_fixture):
+    @pytest.mark.parametrize('a', [[1, 5, 7]])
+    def test1_2(self, class_fixture, a):
         print(f'class fixture:{class_fixture}')
         for i in self.mas:
-            assert i ** 2 <= 49
+            assert i ** 2 <= 82
 
     def test1_3(self, class_fixture):
         print(f'class fixture:{class_fixture}')
-        assert len(self.mas) == 10
+        assert len(self.mas) == 5
 
     def test1_4(self):
-        assert self.mas[::-1] == self.mas
+        print(self.mas.reverse())
+        tmp = self.mas[::-1]
+        self.mas.reverse()
+        assert self.mas == tmp
 
     def test1_5(self, class_fixture):
         print(f'class fixture:{class_fixture}')
-        assert self.mas[:-5] != self.mas
+        assert self.mas[-1] == 8

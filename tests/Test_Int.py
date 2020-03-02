@@ -10,7 +10,7 @@ def class_fixture():
 class Test2:
     var = 11
 
-    @pytest.mark.parametrize('a', [11, 13, 15])
+    @pytest.mark.parametrize('a', [11])
     def test2_1(self, a):
         errors = []
         print(a)
@@ -22,15 +22,18 @@ class Test2:
 
     def test2_2(self, class_fixture):
         print(f'class fixture:{class_fixture}')
-        assert self.var ** 2 <= 49
+        assert self.var ** 2 >= 49
 
     def test2_3(self, class_fixture):
         print(f'class fixture:{class_fixture}')
         assert self.var ** 2 == 121
 
     def test2_4(self):
-        assert (self.var * 2) - 10 <= 22
+        assert self.var // 3 == 3
 
     def test2_5(self, class_fixture):
         print(f'class fixture:{class_fixture}')
-        assert self.var + 4 != 15
+        try:
+            assert self.var/0
+        except ZeroDivisionError:
+            print('Good test')

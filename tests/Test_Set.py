@@ -14,26 +14,23 @@ class Test5:
         errors = []
         for value in self.s:
             try:
-                assert type(value) is str
+                assert type(value) is not dict
             except AssertionError:
-                errors.append(f'{value} is not a string')
+                errors.append(f'{value} is a dict, we can\'t get it')
         assert not errors
 
-    @pytest.mark.parametrize('a', [int, dict])
+    @pytest.mark.parametrize('a', [1, None])
     def test5_2(self, class_fixture, a):
         print(f'class fixture:{class_fixture}')
-        for item in self.s:
-            if type(item) == a:
-                return
-        assert False
+        assert a in self.s
 
     def test5_3(self, class_fixture):
         print(f'class fixture:{class_fixture}')
         assert 15 not in self.s
 
     def test5_4(self):
-        assert self.s.issubset({15, 'Hello'})
+        assert self.s.issuperset({1, 'OMG'})
 
     def test5_5(self, class_fixture):
         print(f'class fixture:{class_fixture}')
-        assert self.s.pop() == 3
+        assert self.s.pop() == 1
