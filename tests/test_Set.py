@@ -33,4 +33,4 @@ class Test5:
 
     def test5_5(self, class_fixture):
         print(f'class fixture:{class_fixture}')
-        assert self.s.pop() == 1
+        assert self.s == {1, 3, 'OMG', None}
