@@ -37,4 +37,4 @@ class Test3:
 
     def test3_5(self, class_fixture):
         print(f'class fixture:{class_fixture}')
-        assert len(self.string.split()) == 3
+        assert len(self.string.split()) + class_fixture >= 4

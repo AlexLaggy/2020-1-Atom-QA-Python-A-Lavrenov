@@ -20,14 +20,13 @@ class Test1:
         assert not errors
 
     @pytest.mark.parametrize('a', [[1, 5, 7]])
-    def test1_2(self, class_fixture, a):
-        print(f'class fixture:{class_fixture}')
+    def test1_2(self, a):
         for i in self.mas:
-            assert i ** 2 <= 82
+            assert i ** 2 <= 1000
 
     def test1_3(self, class_fixture):
         print(f'class fixture:{class_fixture}')
-        assert len(self.mas) == 5
+        assert len(self.mas + [class_fixture]) == 6
 
     def test1_4(self):
         tmp = self.mas[::-1]

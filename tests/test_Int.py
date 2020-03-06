@@ -21,7 +21,7 @@ class Test2:
 
     def test2_2(self, class_fixture):
         print(f'class fixture:{class_fixture}')
-        assert self.var ** 2 >= 49
+        assert self.var ** class_fixture >= 11
 
     def test2_3(self, class_fixture):
         print(f'class fixture:{class_fixture}')

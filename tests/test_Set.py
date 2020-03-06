@@ -25,7 +25,7 @@ class Test5:
 
     def test5_3(self, class_fixture):
         print(f'class fixture:{class_fixture}')
-        assert self.s.intersection({3, None, '1', 'str'}) == {3, None}
+        assert self.s.intersection({3, None, '1', class_fixture}) == {3, None}
 
     def test5_4(self):
         assert self.s.issuperset({1, 'OMG'})

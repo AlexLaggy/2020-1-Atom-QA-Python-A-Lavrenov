@@ -6,7 +6,7 @@ from mimesis import Transport
 
 @pytest.fixture(scope='class')
 def class_fixture():
-    return random.randint(1, 100)
+    return random.randint(0, 4)
 
 
 class Test4:
@@ -37,9 +37,9 @@ class Test4:
     def test4_5(self, class_fixture):
         print(f'class fixture:{class_fixture}')
         errors = []
-        val = self.dictionary[0]
+        val = class_fixture
         try:
-            assert val in self.dictionary.values()
+            assert val in self.dictionary.keys()
         except AssertionError:
             errors.append(f'{val} already exists in values')
         assert not errors
