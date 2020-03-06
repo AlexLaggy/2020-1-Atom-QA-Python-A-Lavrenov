@@ -20,8 +20,7 @@ class Test3:
         assert not errors
 
     @pytest.mark.parametrize('a', ['а', 'е', 'и'])
-    def test3_2(self, class_fixture, a):
-        print(f'class fixture:{class_fixture}')
+    def test3_2(self, a):
         consonants = []
         try:
             assert a in self.string.lower()

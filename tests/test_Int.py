@@ -13,7 +13,6 @@ class Test2:
     @pytest.mark.parametrize('a', [11])
     def test2_1(self, a):
         errors = []
-        print(a)
         try:
             assert a == self.var
         except AssertionError:
@@ -33,7 +32,4 @@ class Test2:
 
     def test2_5(self, class_fixture):
         print(f'class fixture:{class_fixture}')
-        try:
-            assert self.var/0
-        except ZeroDivisionError:
-            print('Good test')
+        assert self.var == int('11')

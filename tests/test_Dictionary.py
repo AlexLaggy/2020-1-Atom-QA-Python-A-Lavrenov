@@ -1,5 +1,6 @@
 import pytest
 import random
+import copy
 from mimesis import Transport
 
 
@@ -22,13 +23,13 @@ class Test4:
         assert not errors
 
     @pytest.mark.parametrize('a', ['Пятерка', 'Ока'])
-    def test4_2(self, class_fixture, a):
-        print(f'class fixture:{class_fixture}')
+    def test4_2(self, a):
         assert a not in self.dictionary.values()
 
     def test4_3(self, class_fixture):
         print(f'class fixture:{class_fixture}')
-        assert 'Volvo' not in self.dictionary.values()
+        tmp = copy.deepcopy(self.dictionary)
+        assert id(tmp) != id(self.dictionary.values())
 
     def test4_4(self):
         assert 0 in self.dictionary.keys()

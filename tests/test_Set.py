@@ -20,17 +20,16 @@ class Test5:
         assert not errors
 
     @pytest.mark.parametrize('a', [1, None])
-    def test5_2(self, class_fixture, a):
-        print(f'class fixture:{class_fixture}')
+    def test5_2(self, a):
         assert a in self.s
 
     def test5_3(self, class_fixture):
         print(f'class fixture:{class_fixture}')
-        assert 15 not in self.s
+        assert self.s.intersection({3, None, '1', 'str'}) == {3, None}
 
     def test5_4(self):
         assert self.s.issuperset({1, 'OMG'})
 
     def test5_5(self, class_fixture):
         print(f'class fixture:{class_fixture}')
-        assert self.s == {1, 3, 'OMG', None}
+        assert self.s == {3, None, 1, 'OMG'}

@@ -8,7 +8,7 @@ def class_fixture():
 
 
 class Test1:
-    mas = [i  for i in range(10)][::2]
+    mas = [i for i in range(10)][::2]
 
     def test1_1(self):
         errors = []
@@ -30,11 +30,10 @@ class Test1:
         assert len(self.mas) == 5
 
     def test1_4(self):
-        print(self.mas.reverse())
         tmp = self.mas[::-1]
         self.mas.reverse()
         assert self.mas == tmp
 
     def test1_5(self, class_fixture):
         print(f'class fixture:{class_fixture}')
-        assert self.mas[-1] == 8
+        assert self.mas[2] == 4
