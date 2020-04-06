@@ -9,20 +9,21 @@ from tests.base import BaseCase
 class Test(BaseCase):
 
     # @pytest.mark.skip(reason='TEMP')
-    @pytest.mark.ui
+    @pytest.mark.UI
     def test_login(self):
         self.user_page.login()
         time.sleep(3)
         assert "Кампании" in self.driver.page_source
 
-    @pytest.mark.ui
+    # @pytest.mark.skip(reason='TEMP')
+    @pytest.mark.UI
     def test_login_error(self):
         self.user_page.login(False)
         time.sleep(3)
         assert "Invalid login or password" in self.driver.page_source
 
     # @pytest.mark.skip(reason='TEMP')
-    @pytest.mark.ui
+    @pytest.mark.UI
     @pytest.mark.parametrize('url,header,text,file_path, company_name',
                              [('mail.ru', 'Test', 'Test', 'Test2.jpg', 'AlexTest')])
     def test_create_advertising_company(self, url, header, text, file_path, company_name):
@@ -46,11 +47,11 @@ class Test(BaseCase):
         self.company_page.click(self.company_page.locators.COMPANY_CONFIRM_UPLOAD_JPG_KOSTIL)
         self.company_page.click(self.company_page.locators.COMPANY_CONFIRM_TIZER)
         self.company_page.click(self.company_page.locators.COMPANY_CONFIRM_CREATE)
-        time.sleep(3)
+        time.sleep(5)
         assert company_name in self.driver.page_source
 
     # @pytest.mark.skip(reason='TEMP')
-    @pytest.mark.ui
+    @pytest.mark.UI
     @pytest.mark.parametrize('segment_name', ['AlexTest'])
     def test_create_segment(self, segment_name):
         self.user_page.login()
