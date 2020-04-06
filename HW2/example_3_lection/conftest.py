@@ -1,26 +1,4 @@
 import pytest
-from ui.fixtures import *
-from dataclasses import dataclass
-
-import pytest
-from api.client import ApiClient
-
-
-# @dataclass
-# class Settings:
-#     URL: str = None
-#
-#
-# @pytest.fixture(scope='session')
-# def conf() -> Settings:
-#     settings = Settings(URL='https://target.my.com')
-#
-#     return settings
-#
-#
-# @pytest.fixture(scope='function')
-# def api_client(conf):
-#     return ApiClient(conf.URL)
 
 
 class UsupportedBrowserException(Exception):

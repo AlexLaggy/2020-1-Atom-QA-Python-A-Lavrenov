@@ -15,4 +15,3 @@ class BaseCase:
         self.base_page: BasePage = request.getfixturevalue('base_page')
         self.company_page: CompanyPage = request.getfixturevalue('company_page')
         self.segment_page: SegmentPage = request.getfixturevalue('segment_page')
-        # self.user_page.login()
