@@ -43,7 +43,7 @@ class Test(BaseCase):
         self.company_page.find(self.company_page.locators.COMPANY_STATES_DELETED, timeout=3)
         assert company_name in self.driver.page_source
 
-    @pytest.mark.API
+    @pytest.mark.UI
     @pytest.mark.parametrize('segment_name', ['AlexTest'])
     def test_create_segment(self, segment_name):
         self.user_page.login()
