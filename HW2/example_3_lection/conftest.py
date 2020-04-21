@@ -1,4 +1,6 @@
 import pytest
+from ui.fixtures import *
+from api.fixtures import *
 
 
 class UsupportedBrowserException(Exception):
@@ -11,6 +13,7 @@ def pytest_addoption(parser):
     parser.addoption('--browser_ver', default='latest')
     parser.addoption('--login', default='LagAlexTest@ya.ru')
     parser.addoption('--password', default='LagAlex')
+    parser.addoption('--selenoid', default=None)
 
 
 @pytest.fixture(scope='session')
@@ -20,6 +23,7 @@ def config(request):
     version = request.config.getoption('--browser_ver')
     login = request.config.getoption('--login')
     password = request.config.getoption('--password')
+    selenoid = request.config.getoption('--selenoid')
 
     return {'browser': browser, 'version': version, 'url': url,
-            'download_dir': '/tmp', 'login': login, 'password': password}
+            'download_dir': '/tmp', 'login': login, 'password': password, 'selenoid': selenoid}

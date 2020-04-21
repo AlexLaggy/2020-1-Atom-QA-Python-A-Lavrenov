@@ -10,13 +10,13 @@ class BaseLocators:
 
     LOGIN_BUTTON_LOGIN_FORM = (By.XPATH, '//div[@class="authForm-module-button-2G6lZu"]')
 
+    CHECK_LOGIN_COMPANY = (By.XPATH, '//a[@class="center-module-button-cQDNvq center-module-segments-3y1hDo"]')
+
 
 class CompanyLocators:
-    # Advertising company
     COMPANY_STATES = (By.XPATH, '//div[@class="select__item select__item_value js-select-button"]')
 
     COMPANY_STATES_DELETED = (By.XPATH, '//li[@cid="view170"]')
-    # SKIPPED
 
     COMPANY_CREATE = (By.XPATH, '//a[@class="campaigns-tbl-settings__button campaigns-tbl-settings__button_new"]')
 
@@ -91,6 +91,10 @@ class SegmentLocators:
     # Check created
     SEGMENT_FIND_CREATED_NAME = (By.XPATH, '//input[@class="suggester-ts__input"]')
 
+    SEGMENT_FIND_BY_NAME = (By.XPATH, f'//span[@title="AlexTest"]')
+
     SEGMENT_REMOVE = (By.XPATH, '//div[@class="remove-source-wrap js-remove-source"]')
 
     SEGMENT_REMOVE_CONFIRM = (By.XPATH, '//button[@class="button button_confirm-remove button_general"]')
+
+    SEGMENT_WAIT = (By.XPATH, '//li[@data-id="_emptyItem"]')

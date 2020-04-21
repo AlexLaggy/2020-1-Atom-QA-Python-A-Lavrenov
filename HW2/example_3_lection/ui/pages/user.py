@@ -2,7 +2,6 @@ from .base import BasePage
 
 from selenium.webdriver.remote.webelement import WebElement
 from ui.locators.basic_locators import BaseLocators
-import allure
 
 
 class UserPage(BasePage):

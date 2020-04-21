@@ -14,11 +14,11 @@ from api.client import ApiClient
 
 class UsupportedBrowserException(Exception):
     pass
-
-
-@pytest.fixture(scope='function')
-def api_client(config):
-    return ApiClient(config['login'], config['password'])
+#
+#
+# @pytest.fixture(scope='function')
+# def api_client(config):
+#     return ApiClient(config['login'], config['password'])
 
 
 @pytest.fixture(scope='function')
@@ -45,6 +45,7 @@ def user_page(driver, config):
 def driver(config):
     browser = config['browser']
     version = config['version']
+    selenoid = config['selenoid']
     url = config['url']
     download_dir = config['download_dir']
 
@@ -54,13 +55,21 @@ def driver(config):
 
         prefs = {"download.default_directory": download_dir}
         options.add_experimental_option('prefs', prefs)
-
-        manager = ChromeDriverManager(version=version)
-        driver = webdriver.Chrome(executable_path=manager.install(),
-                                  options=options,
-                                  desired_capabilities={'acceptInsecureCerts': True}
-                                  )
-
+        if selenoid:
+            capabilities = {'acceptInsecureCerts': True,
+                            'browserName': 'chrome',
+                            'version': version,
+                            }
+            driver = webdriver.Remote(command_executor=f'http://{selenoid}/wd/hub/',
+                                      options=options,
+                                      desired_capabilities=capabilities
+                                      )
+        else:
+            manager = ChromeDriverManager(version=version)
+            driver = webdriver.Chrome(executable_path=manager.install(),
+                                      options=options,
+                                      desired_capabilities={'acceptInsecureCerts': True}
+                                      )
     else:
         raise UsupportedBrowserException(f'Usupported browser: "{browser}"')
 
