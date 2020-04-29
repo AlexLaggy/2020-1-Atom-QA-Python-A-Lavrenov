@@ -24,3 +24,13 @@ In this task i used multidimensional arrays of command `awk` for collect request
 ## Top 10 requests with server error
 For doing this task run ./top10server.sh.
 Script looks like the previous, but it sorts status codes which starts with `5`.
+
+## File delimiter is a white space (but no in data type)
+
+# Tutorial for python block
+
+## All files saved into file in json format.
+
+### Keys for python script
+`-d` is a key for setting `.log` files directory.
+`-f` is a key to specify a name to a single file.

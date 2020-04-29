@@ -20,7 +20,7 @@ def shutdown_mock():
 
 @app.route('/users/<user_id>')
 def get_user_by_id(user_id: int):
-    user = users.get(str(user_id), None)
+    user = users.get(int(user_id))
     if user:
         return user
     else:

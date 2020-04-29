@@ -14,7 +14,7 @@ class MySocket:
     def run(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client.settimeout(0.1)
-        time.sleep(0.5)  # TODO: Fix this Kostil'
+        time.sleep(0.5)
         self.client.connect((self.target_host, self.target_port))
 
     def get_request(self, params):

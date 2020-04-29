@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-wc -l $1
+cat $1 | wc -l
