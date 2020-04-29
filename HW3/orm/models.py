@@ -29,24 +29,28 @@ class Client(Base):
     method = Column(String(7))
     url = Column(String(200))
     status_code = Column(Integer)
+    count = Column(Integer)
 
-    def __init__(self, ip, method, url, status_code):
+    def __init__(self, ip, method, url, status_code, count):
         self.ip = ip
         self.method = method
         self.url = url
         self.status_code = status_code
+        self.count = count
 
 
-class Server(Base):
-    __tablename__ = 'server'
+class ClientSize(Base):
+    __tablename__ = 'client_size'
     id = Column(Integer, primary_key=True)
     ip = Column(String(200))
     method = Column(String(7))
     url = Column(String(200))
     status_code = Column(Integer)
+    size = Column(Integer)
 
-    def __init__(self, ip, method, url, status_code):
+    def __init__(self, ip, method, url, status_code, size):
         self.ip = ip
         self.method = method
         self.url = url
         self.status_code = status_code
+        self.size = size
