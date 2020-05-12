@@ -1,0 +1,22 @@
+version: '2.1'
+
+services:
+  percona_database:
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+    image: "mysql:latest"
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"-uroot", "-ppass", "ping", "-h", "127.0.0.1"]
+      timeout: 20s
+      retries: 10
+
+
+
+  tests:
+    build: .
+    volumes:
+      - ~/PycharmProjects/Atom-QA-Python/Final_Project/DB:/code/DB
+      - ~/PycharmProjects/Atom-QA-Python/Final_Project/mock:/code/mock
+    depends_on:
+      percona_database:
+         condition: service_healthy
