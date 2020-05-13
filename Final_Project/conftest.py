@@ -19,7 +19,7 @@ def pytest_addoption(parser):
     parser.addoption('--db_user', default='test_qa')
     parser.addoption('--db_password', default='qa_test')
     parser.addoption('--db_name', default='test')
-    parser.addoption('--db_host', default='mysql_database')
+    parser.addoption('--db_host', default='127.0.0.1')
     parser.addoption('--db_port', default='3306')
 
 
