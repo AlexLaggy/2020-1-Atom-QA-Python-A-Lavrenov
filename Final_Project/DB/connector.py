@@ -1,8 +1,6 @@
 from sqlalchemy import create_engine, MetaData, Table
 from sqlalchemy.orm import sessionmaker, mapper
 
-from DB.models import TestUsers
-
 
 class Users(object):
     pass
@@ -23,10 +21,10 @@ class DBUser:
         # switch_to
         engine = create_engine(url)
         metadata = MetaData(engine)
-        test_users = Table('test_users', metadata, autoload=True, autoload_with=engine)
+        test_users = Table('test_users', metadata, autoload=True)
         mapper(Users, test_users)
 
-        session = sessionmaker(bind=engine)
+        session = sessionmaker(bind=engine, autocommit=True, enable_baked_queries=False)
 
         return session()
 

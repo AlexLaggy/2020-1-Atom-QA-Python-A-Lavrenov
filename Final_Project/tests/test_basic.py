@@ -1,5 +1,4 @@
 import pytest
-import time
 
 from selenium.webdriver.support import expected_conditions as EC
 from tests.base import BaseCase
@@ -7,21 +6,21 @@ from tests.base import BaseCase
 
 class Test(BaseCase):
 
-    @pytest.mark.skip(reason="TEMP")
+    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
     def test_login(self):
         self.user_page.login()
         self.user_page.find(self.user_page.locators.LOGIN_CONTROLS_MAIN_PAGE, timeout=3)
         assert "powered by ТЕХНОАТОМ" in self.driver.page_source
 
-    @pytest.mark.skip(reason="TEMP")
+    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
     def test_login_error(self):
         self.user_page.login(False)
         assert "Invalid username or password" in self.driver.page_source
 
     @pytest.mark.UI
-    @pytest.mark.skip(reason="TEMP")
+    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.parametrize('username,email,password',
                              [('AutoTest', 't@t.tt', 't')])
     def test_registry_success(self, username, email, password):
@@ -37,7 +36,7 @@ class Test(BaseCase):
         assert "powered by ТЕХНОАТОМ" in self.driver.page_source
 
     @pytest.mark.UI
-    @pytest.mark.skip(reason="TEMP")
+    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.parametrize('username,email,password',
                              [('AutoTest2', 'tasdf@t.t', 't')])
     def test_registry_error_country_email(self, username, email, password):
@@ -49,11 +48,10 @@ class Test(BaseCase):
         self.reg_page.click(self.reg_page.locators.CONFIRM_CITK_LOCATOR)
         self.reg_page.click(self.reg_page.locators.SUBMIT_BUTTON_LOCATOR)
 
-        # Should take an error, bec. of a format of an email
-        assert "Incorrect email" in self.driver.page_source
+        assert "Incorrect email" in self.driver.page_source  # TODO: должна быть ошибка, тк нету 1 буквы в расширении
 
     @pytest.mark.UI
-    @pytest.mark.skip(reason="TEMP")
+    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.parametrize('username,email,password',
                              [('Auto', 'tasdf@t.tt', 't')])
     def test_registry_error_length_username(self, username, email, password):
@@ -67,64 +65,145 @@ class Test(BaseCase):
 
         assert "Incorrect username" in self.driver.page_source
 
-    @pytest.mark.skip(reason="TEMP")
+    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
-    def test_main_carousel(self):
+    def test_main_carousel_bug(self):
         self.user_page.login()
         # self.main_page.click(self.main_page.locators.BUG_BUTTON)
         # assert "powered by ТЕХНОАТОМ" in self.driver.page_source
 
+    # @pytest.mark.skip(reason="TEMP")
+    @pytest.mark.UI
+    def test_main_carousel_home(self):
+        self.user_page.login()
+
         self.main_page.click(self.main_page.locators.HOME_BUTTON)
         assert "powered by ТЕХНОАТОМ" in self.driver.page_source
+        # print(self.driver.capabilities)
+
+        # self.main_page.find(self.main_page.locators.LINUX_BUTTON)
+        # self.main_page.find(self.main_page.locators.AREA_EXPANDED_LINUX)
+
+    # @pytest.mark.skip(reason="TEMP")
+    @pytest.mark.UI
+    def test_main_carousel_linux(self):
+        self.user_page.login()
 
         self.main_page.find(self.main_page.locators.LINUX_BUTTON)
         self.main_page.find(self.main_page.locators.AREA_EXPANDED_LINUX)
+        assert "powered by ТЕХНОАТОМ" in self.driver.page_source
+
+    # @pytest.mark.skip(reason="TEMP")
+    @pytest.mark.UI
+    def test_main_carousel_linux_download(self):
+        self.user_page.login()
 
         self.main_page.click(self.main_page.locators.LINUX_BUTTON)
         self.main_page.click(self.main_page.locators.LINUX_BUTTON)
-        self.main_page.find(self.main_page.locators.AREA_EXPANDED_LINUX)
-        assert "powered by ТЕХНОАТОМ" in self.driver.page_source
+        self.main_page.click(self.main_page.locators.LINUX_DOWNLOAD)
+
+        window_after = self.driver.window_handles[1]
+        self.driver.switch_to.window(window_after)
+
+        assert "Centos" in self.driver.page_source  # TODO: должен быть Centos, а там Fedora
+
+    # @pytest.mark.skip(reason="TEMP")
+    @pytest.mark.UI
+    def test_main_carousel_network(self):
+        self.user_page.login()
 
         self.main_page.click(self.main_page.locators.NETWORK_BUTTON)
+        self.main_page.click(self.main_page.locators.NETWORK_BUTTON)
         self.main_page.find(self.main_page.locators.AREA_EXPANDED_NETWORK)
+
         assert "powered by ТЕХНОАТОМ" in self.driver.page_source
 
-        self.main_page.find(self.main_page.locators.PYTHON_BUTTON)
-        self.main_page.find(self.main_page.locators.AREA_EXPANDED_PYTHON)
-        assert "powered by ТЕХНОАТОМ" in self.driver.page_source
+    # @pytest.mark.skip(reason="TEMP")
+    @pytest.mark.UI
+    def test_main_carousel_network_news(self):
+        self.user_page.login()
 
-    @pytest.mark.skip(reason="TEMP")
+        self.main_page.click(self.main_page.locators.NETWORK_BUTTON)
+        self.main_page.click(self.main_page.locators.NETWORK_BUTTON)
+
+        self.main_page.click(self.main_page.locators.NETWORK_NEWS)
+
+        window_after = self.driver.window_handles[1]
+        self.driver.switch_to.window(window_after)
+
+        assert "I have a lot of traffic" in self.driver.page_source
+
+    # @pytest.mark.skip(reason="TEMP")
+    @pytest.mark.UI
+    def test_main_carousel_network_download(self):
+        self.user_page.login()
+
+        self.main_page.click(self.main_page.locators.NETWORK_BUTTON)
+        self.main_page.click(self.main_page.locators.NETWORK_BUTTON)
+
+        self.main_page.click(self.main_page.locators.NETWORK_DOWNLOAD)
+
+        window_after = self.driver.window_handles[1]
+        self.driver.switch_to.window(window_after)
+
+        assert "current stable release" in self.driver.page_source
+
+    # @pytest.mark.skip(reason="TEMP")
+    @pytest.mark.UI
+    def test_main_carousel_network_tcpdump(self):
+        self.user_page.login()
+
+        self.main_page.click(self.main_page.locators.NETWORK_BUTTON)
+        self.main_page.click(self.main_page.locators.NETWORK_BUTTON)
+
+        self.main_page.click(self.main_page.locators.NETWORK_TCPDUMP)
+
+        window_after = self.driver.window_handles[1]
+        self.driver.switch_to.window(window_after)
+
+        assert "troubleshooting" in self.driver.page_source
+
+    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
     def test_main_carousel_python_click(self):
         self.user_page.login()
 
         self.main_page.click(self.main_page.locators.PYTHON_BUTTON)
-        assert "powered by ТЕХНОАТОМ" in self.driver.page_source
 
-    @pytest.mark.skip(reason="WTF")
+        assert "powered by ТЕХНОАТОМ" in self.driver.page_source  # TODO: должен был открыться выпадающий список
+
+    # @pytest.mark.skip(reason="WTF")
     @pytest.mark.UI
     def test_laptop_icon(self):
         self.user_page.login()
 
         self.main_page.click(self.main_page.locators.LAPTOP_ICON)
-        time.sleep(2)
-        assert "Application" in self.driver.page_source
 
-    @pytest.mark.skip(reason="WTF")
+        window_after = self.driver.window_handles[1]
+        self.driver.switch_to.window(window_after)
+
+        assert "Wikipedia" in self.driver.page_source
+
+    # @pytest.mark.skip(reason="WTF")
     @pytest.mark.UI
     def test_smtp_icon(self):
         self.user_page.login()
 
         self.main_page.click(self.main_page.locators.SMTP_ICON)
-        time.sleep(2)
-        assert "SMTP" in self.driver.page_source
 
-    @pytest.mark.skip(reason="WTF")
+        window_after = self.driver.window_handles[1]
+        self.driver.switch_to.window(window_after)
+
+        assert "Wikipedia" in self.driver.page_source
+
+    # @pytest.mark.skip(reason="WTF")
     @pytest.mark.UI
     def test_lens_icon(self):
         self.user_page.login()
 
         self.main_page.click(self.main_page.locators.LENS_ICON)
-        self.main_page.find(self.main_page.locators.CHECK_SMTP_ICON, timeout=5)
-        assert "Flat is better" in self.driver.page_source
 
+        window_after = self.driver.window_handles[1]
+        self.driver.switch_to.window(window_after)
+
+        assert "Will the Internet Be Like" in self.driver.page_source

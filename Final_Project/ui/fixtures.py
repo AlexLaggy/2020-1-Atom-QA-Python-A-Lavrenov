@@ -76,7 +76,9 @@ def driver(config):
     driver.get(url)
     driver.maximize_window()
     yield driver
-    driver.close()
+    for window in driver.window_handles:
+        driver.switch_to.window(window)
+        driver.close()
 
 
 @pytest.fixture(scope='function', params=['chrome', 'firefox'])

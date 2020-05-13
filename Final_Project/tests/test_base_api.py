@@ -1,174 +1,188 @@
 import pytest
-import time
 
 from tests.base_api import BaseCase
 
+# 308 redirect=False to Home
+
 
 class TestApi(BaseCase):
+    def db_select(self, field, value):
+        self.db.session.expire_all()
+        return self.db.session.query(self.db.table).filter(field == value).first()
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    def test_logout(self):
-        result = self.db.session.query(self.db.table).filter(self.db.table.username == self.api_client.user).first()
-        print(result.__dict__)
-
-        self.api_client.login(self.api_client.user, self.api_client.password)
-        time.sleep(5)
-        result = self.db.session.query(self.db.table).filter(self.db.table.username == self.api_client.user).first()
-        print(result.__dict__)
-
-        response = self.api_client.logout()
-        assert response.status_code == 200
-        time.sleep(5)
-
-        result = self.db.session.query(self.db.table).filter(self.db.table.username == self.api_client.user).first()
-        print(result.__dict__)
-        assert result.active == 0
-
-    @pytest.mark.API
-    @pytest.mark.skip("TEMP")
     def test_login(self):
         response = self.api_client.login(self.api_client.user, self.api_client.password)
         assert response.status_code == 200
 
-        result = self.db.session.query(self.db.table).filter(self.db.table.username == self.api_client.user).first()
+        result = self.db_select(self.db.table.username, self.api_client.user)
         assert result.active == 1
 
     @pytest.mark.API
-    @pytest.mark.skip("TEMP")
-    def test_active_false_2_login(self):
-        response1 = self.api_client.login(self.api_client.user, self.api_client.password)
-        assert response1.status_code == 200
-
-        response2 = self.api_client.login("Fasgen", "qwe")
-        assert response2.status_code == 200
-
-        # проверка, что в базе значение у первого залогиненного active = True
-        result_1 = self.db.session.query(self.db.table).filter(self.db.table.username == self.api_client.user).first()
-        result_2 = self.db.session.query(self.db.table).filter(self.db.table.username == "Fasgen").first()
-
-        print(result_2.__dict__, result_1.__dict__)
-
-        assert result_2.active == 1
-        assert result_1.active == 0
+    # @pytest.mark.skip("TEMP")
+    @pytest.mark.parametrize('username, password', [('Arto', 'p')])
+    def test_login_error_200(self, username, password):
+        response = self.api_client.login(username, password)
+        assert response.status_code == 401  # TODO: код ошибки 200, а должен быть 401
 
     @pytest.mark.API
-    @pytest.mark.skip("TEMP")
+    # @pytest.mark.skip("TEMP")
+    def test_logout(self):
+        response = self.api_client.login(self.api_client.user, self.api_client.password)
+        assert response.status_code == 200
+
+        result = self.db_select(self.db.table.username, self.api_client.user)
+        assert result.active == 1
+
+        response = self.api_client.logout()
+        assert response.status_code == 200
+
+        result = self.db_select(self.db.table.username, self.api_client.user)
+        assert result.active == 0
+
+    @pytest.mark.API
+    # @pytest.mark.skip("TEMP")
     def test_login_500(self):
         response = self.api_client.login(self.api_client.user, self.api_client.password)
-        # print(response.__dict__)
         assert response.status_code == 200
 
     @pytest.mark.API
-    @pytest.mark.skip("TEMP")
+    # @pytest.mark.skip("TEMP")
     def test_add_user(self):
         response = self.api_client.add_user('FastTest', 'qwe', 'test@test.te')
-        print(response.__dict__)
-        assert response.status_code == 200
+        assert response.status_code == 201  # TODO: add_user - не работает api
 
     @pytest.mark.API
-    @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username', ['Artoure'])
-    def test_del_user(self, username):
-        time.sleep(1)
-        result = self.db.session.query(self.db.table).filter(self.db.table.username == username).all()
-        print(result)
-        for i in result:
-            print(i.__dict__)
+    # @pytest.mark.skip("TEMP")
+    @pytest.mark.parametrize('username,email,password', [('Artourchik', 'awp@top.co', 'p')])
+    def test_del_user(self, username, email, password):
+        response = self.api_client.reg(username, email, password, password)
+        assert response.status_code == 200
+
+        result = self.db_select(self.db.table.username, username)
+        assert result.username == username
 
         response = self.api_client.del_user(username)
         assert response.status_code == 204
 
-        time.sleep(1)
-        result = self.db.session.query(self.db.table).filter(self.db.table.username == username).all()
-        print(result)
-        for i in result:
-            print(i.__dict__)
-
-        time.sleep(1)
-        result = self.db.session.query(self.db.table).filter(self.db.table.username == username).all()
-        print(result)
-        for i in result:
-            print(i.__dict__)
-
-        time.sleep(1)
-        result = self.db.session.query(self.db.table).filter(self.db.table.username == username).all()
-        print(result)
-        for i in result:
-            print(i.__dict__)
-        assert len(result) == 0
+        result = self.db_select(self.db.table.username, username)
+        assert result is None
 
     @pytest.mark.API
-    @pytest.mark.skip("TEMP")
+    # @pytest.mark.skip("TEMP")
     def test_del_user_error(self):
+        self.api_client.login(self.api_client.user, self.api_client.password)
+
         response = self.api_client.del_user('Ar')
         assert response.status_code == 404 and response.content == b'User does not exist!'
 
     @pytest.mark.API
-    @pytest.mark.skip("TEMP")
-    def test_block_user(self):
-        response = self.api_client.block_user('Fasgas')
-        print(response.__dict__)
+    # @pytest.mark.skip("TEMP")
+    @pytest.mark.parametrize('username,email,password', [('Kadzima', 'kad@zi.ma', 'p')])
+    def test_block_user(self, username, email, password):
+        self.api_client.reg(username, email, password, password)
+
+        self.api_client.login(self.api_client.user, self.api_client.password)
+
+        response = self.api_client.block_user(username)
         assert response.status_code == 200
 
-        # проверка, что при блоке - состояние active остается
+        result = self.db_select(self.db.table.username, username)
+        assert result.access == 0
+
+        result = self.db_select(self.db.table.username, username)
+        assert result.active == 0  # TODO: при блоке - active не сбрасявыется
+
+        self.api_client.del_user(username)
 
     @pytest.mark.API
-    @pytest.mark.skip("TEMP")
+    # @pytest.mark.skip("TEMP")
     def test_block_user_bad(self):
+        self.api_client.login(self.api_client.user, self.api_client.password)
+
         response = self.api_client.block_user('FastCrack')
-        print(response.__dict__)
         assert response.status_code == 404 and response.content == b'User does not exist!'
 
     @pytest.mark.API
-    @pytest.mark.skip("TEMP")
-    def test_unblock_user(self):
-        response = self.api_client.unblock_user('Fasgas')
-        print(response.__dict__)
+    # @pytest.mark.skip("TEMP")
+    @pytest.mark.parametrize('username,email,password', [('Zeleboba', 'ulica@zi.ma', 'p')])
+    def test_block_blocked_user(self, username, email, password):
+        self.api_client.reg(username, email, password, password)
+
+        self.api_client.login(self.api_client.user, self.api_client.password)
+
+        response = self.api_client.block_user(username)
         assert response.status_code == 200
 
+        response = self.api_client.block_user(username)
+        assert response.status_code == 304
+
+        self.api_client.del_user(username)
+
     @pytest.mark.API
-    @pytest.mark.skip("TEMP")
+    # @pytest.mark.skip("TEMP")
+    @pytest.mark.parametrize('username,email,password', [('AlexPistoletov', 'alex@pist.ov', 'p')])
+    def test_unblock_user(self, username, email, password):
+        self.api_client.reg(username, email, password, password)
+
+        self.api_client.login(self.api_client.user, self.api_client.password)
+
+        response = self.api_client.block_user(username)
+        assert response.status_code == 200
+
+        result = self.db_select(self.db.table.username, username)
+        assert result.access == 0
+
+        response = self.api_client.unblock_user(username)
+        assert response.status_code == 200
+
+        result = self.db_select(self.db.table.username, username)
+        assert result.access == 1
+
+        self.api_client.del_user(username)
+
+    @pytest.mark.API
+    # @pytest.mark.skip("TEMP")
     def test_unblock_user_bad(self):
+        self.api_client.login(self.api_client.user, self.api_client.password)
+
         response = self.api_client.unblock_user('FastCrack')
-        print(response.__dict__)
         assert response.status_code == 404 and response.content == b'User does not exist!'
 
     @pytest.mark.API
-    @pytest.mark.skip("TEMP")
+    # @pytest.mark.skip("TEMP")
     def test_get_status(self):
         response = self.api_client.status()
-        # print(response.__dict__)
         assert response.status_code == 200
 
     @pytest.mark.API
-    @pytest.mark.skip("TEMP")
-    def test_reg(self):
-        response = self.api_client.reg('Ambassa', 'amb@amba.co', 'p', 'p')
-        # print(response.__dict__)
+    # @pytest.mark.skip("TEMP")
+    @pytest.mark.parametrize('username,email,password', [('Pontalika', 'aw@top.co', 'p')])
+    def test_reg(self, username, email, password):
+        response = self.api_client.reg(username, email, password, password)
         assert response.status_code == 200
 
-    @pytest.mark.API
-    @pytest.mark.skip("TEMP")
-    def test_reg_repeated_email(self):
-        response = self.api_client.reg('Amba', 'amb@amba.co', 'p', 'p')
+        result = self.db_select(self.db.table.username, username)
+        assert result.username == username
 
-        assert response.status_code == 400
+        self.api_client.del_user(username)
 
-    @pytest.mark.API
-    @pytest.mark.skip("TEMP")
-    def test_reg_409(self):
-        response = self.api_client.reg('Ambassador', 'ambas@amba.co', 'p', 'p')
-
-        # No such status in description 409
-        assert response.status_code == 400
+        result = self.db_select(self.db.table.username, username)
+        assert result is None
 
     @pytest.mark.API
-    @pytest.mark.skip("TEMP")
-    def test_reg_500(self):
-        response = self.api_client.reg('Okulele', 'yy@yas.ru', 'p', 'p')
+    # @pytest.mark.skip("TEMP")
+    @pytest.mark.parametrize('username,email,password', [('Repeted', 'yy@yas.ru', 'p')])
+    def test_reg_repeated_email(self, username, email, password):
+        response = self.api_client.reg(username, email, password, password)
 
-        # Server Error 500
-        assert response.status_code == 200
+        assert response.status_code == 400  # TODO: сервер выдает 500
 
+    @pytest.mark.API
+    # @pytest.mark.skip("TEMP")
+    @pytest.mark.parametrize('username,email,password', [('Akkakiy13', 'yy@yas.ru', 'p')])
+    def test_reg_409(self, username, email, password):
+        response = self.api_client.reg(username, email, password, password)
 
+        assert response.status_code == 400  # TODO: нету ответа 409 в описании

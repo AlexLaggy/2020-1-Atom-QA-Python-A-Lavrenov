@@ -53,52 +53,16 @@ class MainLocators:
 
     SMTP_ICON = (By.XPATH, '//a[@href="https://ru.wikipedia.org/wiki/SMTP"]')
 
-    CHECK_SMTP_ICON = (By.XPATH, '//h1[contains(text(), "What Will the Internet Be Like in the Next 50 Years?"]')
+    # CHECK_LENS_ICON = (By.XPATH, '//h1[contains(text(), "What Will the Internet Be Like in the Next 50 Years?"]')
 
+    PYTHON_HISTORY = (By.XPATH, '//a[contains(text(), "Python history")]')
 
-class SegmentLocators:
-    SEGMENT_MAIN = (By.XPATH, '//a[@class="center-module-button-cQDNvq center-module-segments-3y1hDo"]')
+    PYTHON_FLASK = (By.XPATH, '//a[contains(text(), "About Flask")]')
 
-    SEGMENT_USER_LIST_PAGE = (By.XPATH, '//a[@href="/segments/users_list"]')
+    LINUX_DOWNLOAD = (By.XPATH, '//a[contains(text(), "Download Centos7")]')
 
-    SEGMENT_USER_LIST_SELECTOR = (By.XPATH, '//div[@class="select-module-item-3gX1Mz"]')
+    NETWORK_NEWS = (By.XPATH, '//a[contains(text(), "News")]')
 
-    SEGMENT_USER_LIST_SELECT_EMAILS = (By.XPATH, '//li[@data-test="emails"]')
+    NETWORK_DOWNLOAD = (By.XPATH, '//a[@href="https://www.wireshark.org/#download"]')
 
-    SEGMENT_USER_LIST_NAME = (By.ID, 'input_form_8')
-
-    SEGMENT_USER_LIST_FILE_BUTTON = (By.XPATH, '//div[@data-test="buttonFile"]')
-
-    SEGMENT_USER_LIST_UPLOAD = (By.XPATH, '//div[@data-test="buttonSubmit"]')
-
-    SEGMENT_CREATE = (By.XPATH, '//div[@class="segments-list__btn-wrap js-create-button-wrap"]'
-                                '//button[@class="button button_submit"]')
-
-    SEGMENT_CREATE_AUDIT_SEGMENT = (By.XPATH, '//div[@class="create-segment-form__block '
-                                              'create-segment-form__block_add js-add-segments-button"]')
-
-    SEGMENT_CREATE_AUDIT_USER_LIST = (By.XPATH, '//div[contains(text(), "Списки пользователей")]')
-
-    SEGMENT_CREATE_AUDIT_ADD_CHOOSE = (By.XPATH, '//div[@data-class-name="SourceView"]'
-                                                 '//input[@class="adding-segments-source__checkbox'
-                                                 ' js-main-source-checkbox"]')
-
-    SEGMENT_CREATE_AUDIT_ADD = (By.XPATH, '//div[@class="adding-segments-modal__btn-wrap js-add-button"]'
-                                          '//button[@class="button button_submit"]')
-
-    SEGMENT_CREATE_AUDIT_NAME = (By.XPATH, '//div[@class="input input_create-segment-form"]'
-                                           '//input[@type="text"]')
-
-    SEGMENT_CREATE_BUTTON = (By.XPATH, '//div[@class="create-segment-form__btn-wrap js-create-segment-button-wrap"]'
-                                       '//button[@class="button button_submit"]')
-
-    # Check created
-    SEGMENT_FIND_CREATED_NAME = (By.XPATH, '//input[@class="suggester-ts__input"]')
-
-    SEGMENT_FIND_BY_NAME = (By.XPATH, f'//span[@title="AlexTest"]')
-
-    SEGMENT_REMOVE = (By.XPATH, '//div[@class="remove-source-wrap js-remove-source"]')
-
-    SEGMENT_REMOVE_CONFIRM = (By.XPATH, '//button[@class="button button_confirm-remove button_general"]')
-
-    SEGMENT_WAIT = (By.XPATH, '//li[@data-id="_emptyItem"]')
+    NETWORK_TCPDUMP = (By.XPATH, '//a[contains(text(), "Examples")]')
