@@ -9,4 +9,4 @@ class UsupportedBrowserException(Exception):
 
 @pytest.fixture(scope='session')
 def api_client(config):
-    return ApiClient(config['login'], config['password'])
+    return ApiClient(config['login'], config['password'], config['url'])

@@ -11,8 +11,8 @@ class RequestErrorException(Exception):
 
 class ApiClient:
 
-    def __init__(self, user, password):
-        self.base_url = 'http://0.0.0.0:5555'
+    def __init__(self, user, password, url):
+        self.base_url = url
 
         self.session = requests.Session()
 
