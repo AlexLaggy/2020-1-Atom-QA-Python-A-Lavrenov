@@ -3,6 +3,7 @@ import pytest
 from tests.base_api import BaseCase
 
 # 308 redirect=False to Home
+# after registration to reg
 
 
 class TestApi(BaseCase):
