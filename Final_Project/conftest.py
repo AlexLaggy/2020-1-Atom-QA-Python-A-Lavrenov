@@ -14,7 +14,7 @@ def pytest_addoption(parser):
     parser.addoption('--browser_ver', default='latest')
     parser.addoption('--login', default='Akkakiy13')
     parser.addoption('--password', default='qwe')
-    parser.addoption('--selenoid', default='selenoid')
+    parser.addoption('--selenoid', default='selenoid:4444')
 
     parser.addoption('--db_user', default='test_qa')
     parser.addoption('--db_password', default='qa_test')
