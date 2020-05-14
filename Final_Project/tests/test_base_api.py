@@ -137,7 +137,7 @@ class TestApi(BaseCase):
         assert result.access == 0
 
         response = self.api_client.unblock_user(username)
-        assert response.status_code == 304
+        assert response.status_code == 200
 
         result = self.db_select(self.db.table.username, username)
         assert result.access == 1
