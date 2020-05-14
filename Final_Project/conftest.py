@@ -44,6 +44,14 @@ def config(request):
             'download_dir': '/tmp', 'login': login, 'password': password, 'selenoid': selenoid}
 
 
+@pytest.hookimpl(hookwrapper=True, tryfirst=True)
+def pytest_runtest_makereport(item):
+    outcome = yield
+    rep = outcome.get_result()
+    setattr(item, "rep_" + rep.when, rep)
+    return rep
+
+
 @pytest.fixture(scope="function", autouse=True)
 def take_screenshot_when_failure(request, driver):
     yield
