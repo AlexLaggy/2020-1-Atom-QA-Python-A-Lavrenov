@@ -88,7 +88,7 @@ class TestApi(BaseCase):
         self.api_client.login(self.api_client.user, self.api_client.password)
 
         response = self.api_client.block_user(username)
-        assert response.status_code == 200
+        assert response.status_code == 304
 
         result = self.db_select(self.db.table.username, username)
         assert result.access == 0
@@ -115,7 +115,7 @@ class TestApi(BaseCase):
         self.api_client.login(self.api_client.user, self.api_client.password)
 
         response = self.api_client.block_user(username)
-        assert response.status_code == 200
+        assert response.status_code == 304
 
         response = self.api_client.block_user(username)
         assert response.status_code == 304
@@ -131,13 +131,13 @@ class TestApi(BaseCase):
         self.api_client.login(self.api_client.user, self.api_client.password)
 
         response = self.api_client.block_user(username)
-        assert response.status_code == 200
+        assert response.status_code == 304
 
         result = self.db_select(self.db.table.username, username)
         assert result.access == 0
 
         response = self.api_client.unblock_user(username)
-        assert response.status_code == 200
+        assert response.status_code == 304
 
         result = self.db_select(self.db.table.username, username)
         assert result.access == 1
