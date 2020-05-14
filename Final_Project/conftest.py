@@ -11,7 +11,7 @@ class UsupportedBrowserException(Exception):
 def pytest_addoption(parser):
     parser.addoption('--url', default='http://app:5555')
     parser.addoption('--browser', default='chrome')
-    parser.addoption('--browser_ver', default='latest')
+    parser.addoption('--browser_ver', default='62.0')
     parser.addoption('--login', default='Akkakiy13')
     parser.addoption('--password', default='qwe')
     parser.addoption('--selenoid', default='selenoid:4444')
