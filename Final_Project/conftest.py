@@ -1,4 +1,5 @@
 import pytest
+import allure
 from ui.fixtures import *
 from api.fixtures import *
 from DB.fixtures import *
@@ -41,3 +42,15 @@ def config(request):
     return {'browser': browser, 'version': version, 'url': url,
             'db_user': db_user, 'db_password': db_password, 'db_name': db_name, 'db_host': db_host, 'db_port': db_port,
             'download_dir': '/tmp', 'login': login, 'password': password, 'selenoid': selenoid}
+
+
+@pytest.fixture(scope="function", autouse=True)
+def take_screenshot_when_failure(request, driver):
+    yield
+    if request.node.rep_call.failed:
+        allure.attach('\n'.join(driver.get_log('browser')),
+                      name='console.log',
+                      attachment_type=allure.attachment_type.TEXT)
+        allure.attach(driver.get_screenshot_as_png(),
+                      name=request.node.location[-1],
+                      attachment_type=allure.attachment_type.PNG)
