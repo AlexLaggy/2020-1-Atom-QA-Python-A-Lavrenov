@@ -60,7 +60,7 @@ def driver(config):
                             'browserName': 'chrome',
                             'version': version,
                             }
-            driver = webdriver.Remote(command_executor=f'http://{selenoid}/wd/hub',
+            driver = webdriver.Remote(command_executor=f'http://{selenoid}/',
                                       options=options,
                                       desired_capabilities=capabilities
                                       )

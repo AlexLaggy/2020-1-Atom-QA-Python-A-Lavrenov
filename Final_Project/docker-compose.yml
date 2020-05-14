@@ -1,9 +1,16 @@
 version: '2.1'
 
+networks:
+  selenoid:
+    external: true
+    name: selenoid
+
 services:
   mysql_database:
     restart: always
     container_name: "mysql_database"
+    networks:
+      - selenoid
     environment:
       MYSQL_DATABASE: 'test'
       MYSQL_ROOT_PASSWORD: "example"
@@ -19,6 +26,8 @@ services:
     restart: always
     build: mock
     container_name: "mock"
+    networks:
+      - selenoid
     volumes:
       - /Users/albatros/PycharmProjects/Atom-QA-Python/Final_Project/mock:/mock
     ports:
@@ -33,6 +42,8 @@ services:
     restart: always
     image: "myapp"
     container_name: "myapp"
+    networks:
+      - selenoid
     ports:
       - "5555:5555"
     volumes:
@@ -41,6 +52,41 @@ services:
       - "mysql_database:mysql_database"
       - "mock:mock"
     command: "/app/myapp --config=/config/config.conf"
+    depends_on:
+      mysql_database:
+        condition: service_healthy
+
+  jenkins:
+    restart: always
+    image: "jenkins-custom"
+    container_name: "jenkins"
+    networks:
+      - selenoid
+    ports:
+      - "8082:8080"
+      - "50001:50000"
+    volumes:
+      - ~/jenkins_home:/var/jenkins_home
+    depends_on:
+      mysql_database:
+        condition: service_healthy
+
+  selenoid:
+    restart: always
+    image: "aerokube/selenoid"
+    container_name: "selenoid"
+    networks:
+      - selenoid
+    volumes:
+      - "~/docker_files/selenoid:/etc/selenoid"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "~/docker_files/selenoid/video:/opt/selenoid/video"
+      - "~/docker_files/selenoid/logs:/opt/selenoid/logs"
+    environment:
+      - OVERRIDE_VIDEO_OUTPUT_DIR=/path/to/config/video
+    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs", "-container-network", "selenoid"]
+    ports:
+      - "4444:4444"
     depends_on:
       mysql_database:
         condition: service_healthy
