@@ -55,6 +55,7 @@ def driver(config):
 
         prefs = {"download.default_directory": download_dir}
         options.add_experimental_option('prefs', prefs)
+        options.add_argument('--ignore-certificate-errors')
         if selenoid:
             capabilities = {'acceptInsecureCerts': True,
                             'browserName': 'chrome',
