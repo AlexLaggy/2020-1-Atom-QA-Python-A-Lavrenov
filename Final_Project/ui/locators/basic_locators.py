@@ -30,7 +30,7 @@ class RegLocators:
 
 
 class MainLocators:
-    BUG_BUTTON = (By.CLASS_NAME, "uk-navbar-brand uk-hidden-small")
+    BUG_BUTTON = (By.XPATH, '//a[contains(text(), "TM version")]')
 
     HOME_BUTTON = (By.XPATH, '//a[contains(text(), "HOME")]')
 

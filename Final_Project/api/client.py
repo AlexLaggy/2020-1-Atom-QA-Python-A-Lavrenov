@@ -19,6 +19,9 @@ class ApiClient:
         self.user = user
         self.password = password
 
+    def get(self, url):
+        return self.session.request('GET', f'{self.base_url}/{url}')
+
     def login(self, user, password):
         data = {
             "username": user,

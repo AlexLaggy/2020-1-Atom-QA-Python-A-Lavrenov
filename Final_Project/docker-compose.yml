@@ -38,10 +38,10 @@ services:
       mysql_database:
         condition: service_healthy
 
-  app:
+  uselessapp:
     restart: always
     image: "myapp"
-    container_name: "myapp"
+    container_name: "uselessapp"
     networks:
       - selenoid
     ports:

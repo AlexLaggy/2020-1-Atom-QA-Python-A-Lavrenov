@@ -14,6 +14,13 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
+    @pytest.mark.parametrize('url', ['static/images/laptop.png', 'static/scripts/findMeError.js'])
+    def test_find_me_error(self, url):
+        response = self.api_client.get(url)
+        assert response.status_code == 200  # TODO: нашел findMeError.js
+
+    @pytest.mark.API
+    # @pytest.mark.skip("TEMP")
     def test_login(self):
         response = self.api_client.login(self.api_client.user, self.api_client.password)
         assert response.status_code == 200

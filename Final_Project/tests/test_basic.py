@@ -19,10 +19,31 @@ class Test(BaseCase):
         self.user_page.login(False)
         assert "Invalid username or password" in self.driver.page_source
 
+    # @pytest.mark.skip("TEMP")
+    @pytest.mark.UI
+    @pytest.mark.parametrize('username,email,password', [('Artourchik', 'awp@top.co', 'p')])
+    def test_login_status_after_registration(self, username, email, password):
+        self.reg_page.click(self.reg_page.locators.GO_REG_BUTTON)
+        self.reg_page.search(username, self.reg_page.locators.USERNAME_LOCATOR)
+        self.reg_page.search(email, self.reg_page.locators.EMAIL_LOCATOR)
+        self.reg_page.search(password, self.reg_page.locators.PASSWORD_LOCATOR)
+        self.reg_page.search(password, self.reg_page.locators.CONFIRM_PASSWORD_LOCATOR)
+        self.reg_page.click(self.reg_page.locators.CONFIRM_CITK_LOCATOR)
+        self.reg_page.click(self.reg_page.locators.SUBMIT_BUTTON_LOCATOR)
+
+        self.reg_page.find(self.reg_page.locators.LOGIN_CONTROLS_MAIN_PAGE, timeout=3)
+        assert "powered by ТЕХНОАТОМ" in self.driver.page_source
+
+        user = self.db.session.query(self.db.table).filter(self.db.table.username == username).first()
+
+        self.db.session.query(self.db.table).filter(self.db.table.username == username).delete()
+
+        assert user.active == 1  # TODO: мы уже на странице, а следовательно статус в базе должен быть 1
+
     @pytest.mark.UI
     # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.parametrize('username,email,password',
-                             [('AutoTest', 't@t.tt', 't')])
+                             [('AutoSuccess', 'suc@t.tt', 't')])
     def test_registry_success(self, username, email, password):
         self.reg_page.click(self.reg_page.locators.GO_REG_BUTTON)
         self.reg_page.search(username, self.reg_page.locators.USERNAME_LOCATOR)
@@ -34,6 +55,8 @@ class Test(BaseCase):
 
         self.reg_page.find(self.reg_page.locators.LOGIN_CONTROLS_MAIN_PAGE, timeout=3)
         assert "powered by ТЕХНОАТОМ" in self.driver.page_source
+
+        self.db.session.query(self.db.table).filter(self.db.table.username == username).delete()
 
     @pytest.mark.UI
     # @pytest.mark.skip(reason="TEMP")
@@ -69,8 +92,9 @@ class Test(BaseCase):
     @pytest.mark.UI
     def test_main_carousel_bug(self):
         self.user_page.login()
-        # self.main_page.click(self.main_page.locators.BUG_BUTTON)
-        # assert "powered by ТЕХНОАТОМ" in self.driver.page_source
+
+        self.main_page.click(self.main_page.locators.BUG_BUTTON)
+        assert "powered by ТЕХНОАТОМ" in self.driver.page_source
 
     # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
@@ -79,10 +103,6 @@ class Test(BaseCase):
 
         self.main_page.click(self.main_page.locators.HOME_BUTTON)
         assert "powered by ТЕХНОАТОМ" in self.driver.page_source
-        # print(self.driver.capabilities)
-
-        # self.main_page.find(self.main_page.locators.LINUX_BUTTON)
-        # self.main_page.find(self.main_page.locators.AREA_EXPANDED_LINUX)
 
     # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
