@@ -92,18 +92,15 @@ class TestApi(BaseCase):
     def test_block_user(self, username, email, password):
         self.api_client.reg(username, email, password, password)
 
-        self.api_client.login(self.api_client.user, self.api_client.password)
+        self.api_client.login(username, password)
 
-        response = self.api_client.block_user(username)
-        assert response.status_code == 200
+        self.api_client.block_user(username)
 
         result = self.db_select(self.db.table.username, username)
         assert result.access == 0
 
-        result = self.db_select(self.db.table.username, username)
-        assert result.active == 0  # TODO: при блоке - active не сбрасявыется
-
         self.api_client.del_user(username)
+        assert result.active == 0  # TODO: при блоке - active не сбрасявыется
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
@@ -116,13 +113,10 @@ class TestApi(BaseCase):
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
     @pytest.mark.parametrize('username,email,password', [('Zeleboba', 'ulica@zi.ma', 'p')])
-    def test_block_blocked_user(self, username, email, password):
+    def test_block_user_304(self, username, email, password):
         self.api_client.reg(username, email, password, password)
 
         self.api_client.login(self.api_client.user, self.api_client.password)
-
-        response = self.api_client.block_user(username)
-        assert response.status_code == 200
 
         response = self.api_client.block_user(username)
         assert response.status_code == 200
