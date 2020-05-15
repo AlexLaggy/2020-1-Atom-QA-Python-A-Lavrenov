@@ -176,7 +176,7 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,email,password', [('Repeted', 'yy@yas.ru', 'p')])
+    @pytest.mark.parametrize('username,email,password', [('Repeted', 'yay@yas.ru', 'p')])
     def test_reg_repeated_email(self, username, email, password):
         response = self.api_client.reg(username, email, password, password)
 
