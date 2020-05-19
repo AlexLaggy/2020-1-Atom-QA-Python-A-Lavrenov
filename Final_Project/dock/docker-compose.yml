@@ -61,23 +61,6 @@ services:
       mysql_database:
         condition: service_healthy
 
-  jenkins:
-    restart: always
-    image: "jenkins-custom"
-    container_name: "jenkins"
-    networks:
-      - selenoid
-    ports:
-      - "8082:8080"
-      - "50001:50000"
-    volumes:
-      - "~/jenkins_home:/var/jenkins_home"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./:/var/jenkins_home/workspace/home_dir"
-    depends_on:
-      mysql_database:
-        condition: service_healthy
-
   selenoid:
     restart: always
     image: "aerokube/selenoid"

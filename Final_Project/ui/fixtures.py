@@ -9,16 +9,10 @@ from ui.pages.base import BasePage
 from ui.pages.registry import RegPage
 from ui.pages.main import MainPage
 from ui.pages.user import UserPage
-from api.client import ApiClient
 
 
 class UsupportedBrowserException(Exception):
     pass
-#
-#
-# @pytest.fixture(scope='function')
-# def api_client(config):
-#     return ApiClient(config['login'], config['password'])
 
 
 @pytest.fixture(scope='function')

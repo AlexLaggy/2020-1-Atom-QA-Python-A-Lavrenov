@@ -1,13 +1,38 @@
 import pytest
+import json
 
 from tests.base_api import BaseCase
+
+
+data = []
+
+
+def collect_data():
+    with open('data.txt') as f:
+        data.extend(json.loads(f.read()))
 
 # 308 redirect=False to Home
 # after registration to reg
 # reg 500 при первой регистрации Akkakiy13
 
+# внутри Jenkins поднимать docker-compose
+# Создать фикстуру для пользователя DB (+)
+# Данные для тестов в Faker (?)
+# Timeout для selenoid (+)
+# Вернуть скриншоты, но только на UI (+)
+# Многопоточный запуск тест
+
 
 class TestApi(BaseCase):
+
+    collect_data()
+
+    # @pytest.fixture(scope='session', autouse=True)
+    # def set_data(self):
+    #     global data
+    #     data = self.data
+    #     print(data)
+
     def db_select(self, field, value):
         self.db.session.expire_all()
         return self.db.session.query(self.db.table).filter(field == value).first()
@@ -30,9 +55,10 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username, password', [('Arto', 'p')])
+    @pytest.mark.parametrize('username, password', [(data[0]['username'], data[0]['password'])])
     def test_login_error_200(self, username, password):
-        response = self.api_client.login(username, password)
+        response = self.api_client.login(username[:4], password)
+
         assert response.status_code == 401  # TODO: код ошибки 200, а должен быть 401
 
     @pytest.mark.API
@@ -52,19 +78,18 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    def test_login_500(self):
-        response = self.api_client.login(self.api_client.user, self.api_client.password)
-        assert response.status_code == 200
+    @pytest.mark.parametrize('username,email,password', [(data[1].values())])
+    def test_add_user(self, username, email, password):
+        self.api_client.login(self.api_client.user, self.api_client.password)
+        response = self.api_client.add_user(username, password, email)
+
+        self.api_client.del_user(username)
+
+        assert response.status_code == 201  # TODO: код добавления от сервера 210, а должен быть 201
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    def test_add_user(self):
-        response = self.api_client.add_user('FastTest', 'qwe', 'test@test.te')
-        assert response.status_code == 201  # TODO: add_user - не работает api
-
-    @pytest.mark.API
-    # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,email,password', [('Artourchik', 'awp@top.co', 'p')])
+    @pytest.mark.parametrize('username,email,password', [(data[2].values())])
     def test_del_user(self, username, email, password):
         response = self.api_client.reg(username, email, password, password)
         assert response.status_code == 200
@@ -88,17 +113,17 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,email,password', [('Kadzima', 'kad@zi.ma', 'p')])
+    @pytest.mark.parametrize('username,email,password', [(data[3].values())])
     def test_block_user(self, username, email, password):
         self.api_client.reg(username, email, password, password)
 
-        self.api_client.login(username, password)
+        self.api_client.login(self.api_client.user, self.api_client.password)
 
         self.api_client.block_user(username)
 
         result = self.db_select(self.db.table.username, username)
         assert result.access == 0
-
+        # print(result.__dict__)
         self.api_client.del_user(username)
         assert result.active == 0  # TODO: при блоке - active не сбрасявыется
 
@@ -112,38 +137,33 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,email,password', [('Zeleboba', 'ulica@zi.ma', 'p')])
+    @pytest.mark.parametrize('username,email,password', [(data[4].values())])
     def test_block_user_304(self, username, email, password):
         self.api_client.reg(username, email, password, password)
 
         self.api_client.login(self.api_client.user, self.api_client.password)
 
         response = self.api_client.block_user(username)
-        assert response.status_code == 200
-
         self.api_client.del_user(username)
+        assert response.status_code == 200
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,email,password', [('AlexPistoletov', 'alex@pist.ov', 'p')])
+    @pytest.mark.parametrize('username,email,password', [(data[5].values())])
     def test_unblock_user(self, username, email, password):
         self.api_client.reg(username, email, password, password)
 
         self.api_client.login(self.api_client.user, self.api_client.password)
 
-        response = self.api_client.block_user(username)
-        assert response.status_code == 304
+        self.api_client.block_user(username)
 
         result = self.db_select(self.db.table.username, username)
         assert result.access == 0
 
-        response = self.api_client.unblock_user(username)
-        assert response.status_code == 200
-
-        result = self.db_select(self.db.table.username, username)
-        assert result.access == 1
+        self.api_client.unblock_user(username)
 
         self.api_client.del_user(username)
+        assert result.access == 1
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
@@ -161,7 +181,7 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,email,password', [('Pontalika', 'aw@top.co', 'p')])
+    @pytest.mark.parametrize('username,email,password', [(data[6].values())])
     def test_reg(self, username, email, password):
         response = self.api_client.reg(username, email, password, password)
         assert response.status_code == 200
@@ -176,16 +196,17 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,email,password', [('Repeted', 'yay@yas.ru', 'p')])
-    def test_reg_repeated_email(self, username, email, password):
-        response = self.api_client.reg(username, email, password, password)
-
+    @pytest.mark.parametrize('username,password', [(data[7]['username'], data[7]['password'])])
+    def test_reg_repeated_email(self, username, password):
+        response = self.api_client.reg(username, self.api_client.email, password, password)
         assert response.status_code == 400  # TODO: сервер выдает 500
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,email,password', [('Akkakiy13', 'yy@yas.ru', 'p')])
+    @pytest.mark.parametrize('username,email,password', [(data[0]['username'], data[8]['email'], data[8]['password'])])
     def test_reg_409(self, username, email, password):
         response = self.api_client.reg(username, email, password, password)
+
+        self.api_client.del_user(username)
 
         assert response.status_code == 400  # TODO: нету ответа 409 в описании

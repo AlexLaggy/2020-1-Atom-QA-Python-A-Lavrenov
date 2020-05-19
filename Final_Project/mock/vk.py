@@ -68,4 +68,4 @@ def shutdown():
 
 if __name__ == '__main__':
     run_mock('0.0.0.0', 5000)
-    a = DBUser('mock', 'mock', 'test', 'mysql_database', '3306')
+    a = DBUser('test_qa', 'qa_test', 'test', 'mysql_database', '3306')

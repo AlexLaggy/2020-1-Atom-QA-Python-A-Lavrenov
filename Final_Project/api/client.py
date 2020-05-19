@@ -1,4 +1,5 @@
 import requests
+import json
 
 
 class ResponseStatusCodeException(Exception):
@@ -11,13 +12,14 @@ class RequestErrorException(Exception):
 
 class ApiClient:
 
-    def __init__(self, user, password, url):
+    def __init__(self, user, password, email, url):
         self.base_url = url
 
         self.session = requests.Session()
 
         self.user = user
         self.password = password
+        self.email = email
 
     def get(self, url):
         return self.session.request('GET', f'{self.base_url}/{url}')
@@ -33,15 +35,14 @@ class ApiClient:
     def logout(self):
         return self.session.request('GET', f'{self.base_url}/logout')
 
-    def add_user(self, username, password, email):
+    def add_user(self, username, email, password):
 
         data = {
             "username": username,
             "password": password,
             "email": email
         }
-        print('OP')
-        return self.session.request('POST', f'{self.base_url}/api/add_user', data=data)
+        return self.session.request('POST', f'{self.base_url}/api/add_user', data=json.dumps(data))
 
     def del_user(self, username):
         return self.session.request('GET', f'{self.base_url}/api/del_user/{username}')

@@ -1,8 +1,13 @@
 import pytest
+import requests
 import allure
+from faker import Faker
 from ui.fixtures import *
 from api.fixtures import *
 from DB.fixtures import *
+
+
+MAX_TEST_COUNT = 50
 
 
 class UsupportedBrowserException(Exception):
@@ -16,6 +21,7 @@ def pytest_addoption(parser):
     parser.addoption('--browser_ver', default='latest')
     parser.addoption('--login', default='Akkakiy13')
     parser.addoption('--password', default='qwe')
+    parser.addoption('--email', default='yas@ya.ru')
     parser.addoption('--selenoid', default='selenoid:4444')
     # parser.addoption('--selenoid', default=None)
 
@@ -34,6 +40,7 @@ def config(request):
     version = request.config.getoption('--browser_ver')
     login = request.config.getoption('--login')
     password = request.config.getoption('--password')
+    email = request.config.getoption('--email')
     selenoid = request.config.getoption('--selenoid')
 
     db_user = request.config.getoption('--db_user')
@@ -44,24 +51,46 @@ def config(request):
 
     return {'browser': browser, 'version': version, 'url': url,
             'db_user': db_user, 'db_password': db_password, 'db_name': db_name, 'db_host': db_host, 'db_port': db_port,
-            'download_dir': '/tmp', 'login': login, 'password': password, 'selenoid': selenoid}
+            'download_dir': '/tmp', 'login': login, 'password': password, 'selenoid': selenoid, 'email': email}
 
 
-# @pytest.hookimpl(hookwrapper=True, tryfirst=True)
-# def pytest_runtest_makereport(item):
-#     outcome = yield
-#     rep = outcome.get_result()
-#     setattr(item, "rep_" + rep.when, rep)
-#     return rep
-#
-#
-# @pytest.fixture(scope="function", autouse=True)
-# def take_screenshot_when_failure(request, driver):
-#     yield
-#     if request.node.rep_call.failed:
-#         allure.attach('\n'.join(driver.get_log('browser')),
-#                       name='console.log',
-#                       attachment_type=allure.attachment_type.TEXT)
-#         allure.attach(driver.get_screenshot_as_png(),
-#                       name=request.node.location[-1],
-#                       attachment_type=allure.attachment_type.PNG)
+@pytest.hookimpl(hookwrapper=True, tryfirst=True)
+def pytest_runtest_makereport(item):
+    outcome = yield
+    rep = outcome.get_result()
+    setattr(item, "rep_" + rep.when, rep)
+    return rep
+
+
+@pytest.fixture
+def take_screenshot_when_failure(request, driver):
+    yield
+    if request.node.rep_call.failed:
+        allure.attach('\n'.join([a['message'] for a in driver.get_log('browser')]),
+                      name='console.log',
+                      attachment_type=allure.attachment_type.TEXT)
+        allure.attach(driver.get_screenshot_as_png(),
+                      name=request.node.location[-1],
+                      attachment_type=allure.attachment_type.PNG)
+
+
+@pytest.fixture(scope='session', autouse=True)
+def create_db_user(config):
+    session = requests.Session()
+    data = {
+        "username": config['login'],
+        "email": config['email'],
+        "password": config['password'],
+        "confirm": config['password'],
+        "term": "y",
+        "submit": "Register"
+    }
+    session.request('POST', f'{config["url"]}/reg', data=data)
+    yield
+    data = {
+        "username": config['login'],
+        "password": config['password'],
+        "submit": "Login"
+    }
+    session.request('POST', f'{config["url"]}/login', data=data)
+    session.request('GET', f'{config["url"]}/api/del_user/{config["login"]}', data=data)

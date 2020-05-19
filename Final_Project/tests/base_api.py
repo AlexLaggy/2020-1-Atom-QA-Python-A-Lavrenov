@@ -9,6 +9,7 @@ class UserNotFoundException(Exception):
 
 
 class BaseCase:
+    data = None
 
     @pytest.fixture(scope='function', autouse=True)
     def setup(self, config, request):
