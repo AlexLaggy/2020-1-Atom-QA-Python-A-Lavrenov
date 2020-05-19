@@ -56,7 +56,7 @@ services:
     links:
       - "mysql_database:mysql_database"
       - "mock:mock"
-    command: "/app/myapp --config=path/config.conf"
+    command: "/app/myapp --config=/config/config.conf"
     depends_on:
       mysql_database:
         condition: service_healthy
