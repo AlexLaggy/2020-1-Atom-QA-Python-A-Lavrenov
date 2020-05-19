@@ -61,6 +61,7 @@ services:
       mysql_database:
         condition: service_healthy
 
+
   selenoid:
     restart: always
     image: "aerokube/selenoid"
