@@ -7,4 +7,4 @@ RUN pip3.8 install -r /requirements.txt
 
 WORKDIR /mock
 
-CMD ["python", "vk.py"]
+CMD ["python3.8", "mock/vk.py"]
