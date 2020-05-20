@@ -17,7 +17,7 @@ services:
       MYSQL_PASSWORD: 'qa_test'
       MYSQL_ROOT_PASSWORD: "example"
 #    image: "mysql:latest"
-    build: ./path
+    build: /var/jenkins_home/workspace/src/Final_project/path
     ports:
       - "3306:3306"
 #    command: "mysql --user=root --password=example --execute=mysql.sql"
@@ -28,12 +28,12 @@ services:
 
   mock:
     restart: always
-    build: /var/jenkins_home/workspace/src/Final_project/mock:/mock
+    build: /var/jenkins_home/workspace/src/Final_project/mock
     container_name: "mock"
     networks:
       - selenoid
-#    volumes:
-#      - $WORKSPACE/src/Final_Project/mock:/mock
+    volumes:
+      - /var/jenkins_home/workspace/src/Final_project/mock:/mock
     ports:
       - "5000:5000"
     links:
