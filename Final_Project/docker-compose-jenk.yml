@@ -28,7 +28,7 @@ services:
 
   mock:
     restart: always
-    build: mock
+    build: /var/jenkins_home/workspace/src/Final_project/mock:/mock
     container_name: "mock"
     networks:
       - selenoid
@@ -51,7 +51,7 @@ services:
     ports:
       - "5555:5555"
     volumes:
-      - $WORKSPACE/src/Final_Project/path:/config
+      - /var/jenkins_home/workspace/src/Final_project/path:/config
     links:
       - "mysql_database:mysql_database"
       - "mock:mock"
@@ -60,22 +60,22 @@ services:
       mysql_database:
         condition: service_healthy
 
-  selenoid:
-    restart: always
-    image: "aerokube/selenoid"
-    container_name: "selenoid"
-    networks:
-      - selenoid
-    volumes:
-      - "~/docker_files/selenoid:/etc/selenoid"
-      - "/var/run/docker.sock:/var/run/docker.sock"
-      - "~/docker_files/selenoid/video:/opt/selenoid/video"
-      - "~/docker_files/selenoid/logs:/opt/selenoid/logs"
-    environment:
-      - OVERRIDE_VIDEO_OUTPUT_DIR=/path/to/config/video
-    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs", "-container-network", "selenoid"]
-    ports:
-      - "4444:4444"
-    depends_on:
-      mysql_database:
-        condition: service_healthy
+#  selenoid:
+#    restart: always
+#    image: "aerokube/selenoid"
+#    container_name: "selenoid"
+#    networks:
+#      - selenoid
+#    volumes:
+#      - "~/docker_files/selenoid:/etc/selenoid"
+#      - "/var/run/docker.sock:/var/run/docker.sock"
+#      - "~/docker_files/selenoid/video:/opt/selenoid/video"
+#      - "~/docker_files/selenoid/logs:/opt/selenoid/logs"
+#    environment:
+#      - OVERRIDE_VIDEO_OUTPUT_DIR=/path/to/config/video
+#    command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs", "-container-network", "selenoid"]
+#    ports:
+#      - "4444:4444"
+#    depends_on:
+#      mysql_database:
+#        condition: service_healthy
