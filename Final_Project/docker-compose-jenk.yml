@@ -18,13 +18,14 @@ services:
       MYSQL_ROOT_PASSWORD: "example"
     image: "mysql:latest"
     volumes:
-      - /var/jenkins_home/mysql.sql:/docker-entrypoint-initdb.d/mysql.sql
+      - ./path/mysql.sql:/docker-entrypoint-initdb.d/mysql.sql
     ports:
       - "3306:3306"
+#    command: "mysql --user=root --password=example --execute=mysql.sql"
     healthcheck:
       test: ["CMD", "mysqladmin" ,"-uroot", "-ppass", "ping", "-h", "127.0.0.1"]
       timeout: 20s
-      retries: 10
+      retries: 25
 
   mock:
     restart: always
@@ -60,7 +61,6 @@ services:
       mysql_database:
         condition: service_healthy
 
-
   selenoid:
     restart: always
     image: "aerokube/selenoid"
@@ -68,10 +68,10 @@ services:
     networks:
       - selenoid
     volumes:
-      - "/var/jenkins_home/selenoid:/etc/selenoid"
+      - "~/docker_files/selenoid:/etc/selenoid"
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "/var/jenkins_home/selenoid/video:/opt/selenoid/video"
-      - "/var/jenkins_home/selenoid/logs:/opt/selenoid/logs"
+      - "~/docker_files/selenoid/video:/opt/selenoid/video"
+      - "~/docker_files/selenoid/logs:/opt/selenoid/logs"
     environment:
       - OVERRIDE_VIDEO_OUTPUT_DIR=/path/to/config/video
     command: ["-conf", "/etc/selenoid/browsers.json", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs", "-container-network", "selenoid"]
