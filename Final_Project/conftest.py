@@ -1,6 +1,7 @@
 import pytest
 import requests
 import allure
+import random
 from faker import Faker
 from ui.fixtures import *
 from api.fixtures import *
@@ -23,6 +24,7 @@ def pytest_addoption(parser):
     parser.addoption('--password', default='qwe')
     parser.addoption('--email', default='yas@ya.ru')
     parser.addoption('--selenoid', default='selenoid:4444')
+    # parser.addoption('--selenoid', default='0.0.0.0:4444')
     # parser.addoption('--selenoid', default=None)
 
     parser.addoption('--db_user', default='test_qa')
@@ -94,3 +96,29 @@ def create_db_user(config):
     }
     session.request('POST', f'{config["url"]}/login', data=data)
     session.request('GET', f'{config["url"]}/api/del_user/{config["login"]}', data=data)
+
+
+def generate_user(dong=0):
+    Faker.seed(dong)
+    fake = Faker(['cs_CZ', 'en_GB', 'ru_RU'])
+    user = ''
+    email = ''
+    while len(user) < 7 and len(email) < 7:
+        user = fake.user_name()
+        email = fake.ascii_email()
+    data = {
+        'username': user,
+        'email': email,
+        'password': fake.credit_card_security_code()
+    }
+    return data
+
+
+@pytest.fixture()
+def user_fixture():
+    return generate_user(random.randint(1, 1000))
+
+
+@pytest.fixture(params=[1])
+def parametrized_fixture(request):
+    return request.getfixturevalue('user_fixture')

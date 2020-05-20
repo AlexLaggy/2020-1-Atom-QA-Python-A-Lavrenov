@@ -1,21 +1,12 @@
 import pytest
-import json
 
 from tests.base_api import BaseCase
-
-
-data = []
-
-
-def collect_data():
-    with open('data.txt') as f:
-        data.extend(json.loads(f.read()))
 
 # 308 redirect=False to Home
 # after registration to reg
 # reg 500 при первой регистрации Akkakiy13
 
-# внутри Jenkins поднимать docker-compose
+# внутри Jenkins поднимать docker-compose (+)
 # Создать фикстуру для пользователя DB (+)
 # Данные для тестов в Faker (?)
 # Timeout для selenoid (+)
@@ -24,14 +15,6 @@ def collect_data():
 
 
 class TestApi(BaseCase):
-
-    collect_data()
-
-    # @pytest.fixture(scope='session', autouse=True)
-    # def set_data(self):
-    #     global data
-    #     data = self.data
-    #     print(data)
 
     def db_select(self, field, value):
         self.db.session.expire_all()
@@ -55,8 +38,10 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username, password', [(data[0]['username'], data[0]['password'])])
-    def test_login_error_200(self, username, password):
+    # @pytest.mark.parametrize('username, password', [(data[0]['username'], data[0]['password'])])
+    # @pytest.mark.usefixtures("parametrized_fixture")
+    def test_login_error_200(self, parametrized_fixture):
+        username, _, password = parametrized_fixture.values()
         response = self.api_client.login(username[:4], password)
 
         assert response.status_code == 401  # TODO: код ошибки 200, а должен быть 401
@@ -78,8 +63,10 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,email,password', [(data[1].values())])
-    def test_add_user(self, username, email, password):
+    # @pytest.mark.parametrize('username,email,password', [(data[1].values())])
+    # @pytest.mark.usefixtures("parametrized_fixture")
+    def test_add_user(self, parametrized_fixture):
+        username, email, password = parametrized_fixture.values()
         self.api_client.login(self.api_client.user, self.api_client.password)
         response = self.api_client.add_user(username, password, email)
 
@@ -89,8 +76,9 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,email,password', [(data[2].values())])
-    def test_del_user(self, username, email, password):
+    # @pytest.mark.parametrize('username,email,password', [(data[2].values())])
+    def test_del_user(self, parametrized_fixture):
+        username, email, password = parametrized_fixture.values()
         response = self.api_client.reg(username, email, password, password)
         assert response.status_code == 200
 
@@ -113,8 +101,9 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,email,password', [(data[3].values())])
-    def test_block_user(self, username, email, password):
+    # @pytest.mark.parametrize('username,email,password', [(data[3].values())])
+    def test_block_user(self, parametrized_fixture):
+        username, email, password = parametrized_fixture.values()
         self.api_client.reg(username, email, password, password)
 
         self.api_client.login(self.api_client.user, self.api_client.password)
@@ -137,8 +126,9 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,email,password', [(data[4].values())])
-    def test_block_user_304(self, username, email, password):
+    # @pytest.mark.parametrize('username,email,password', [(data[4].values())])
+    def test_block_user_304(self, parametrized_fixture):
+        username, email, password = parametrized_fixture.values()
         self.api_client.reg(username, email, password, password)
 
         self.api_client.login(self.api_client.user, self.api_client.password)
@@ -149,8 +139,9 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,email,password', [(data[5].values())])
-    def test_unblock_user(self, username, email, password):
+    # @pytest.mark.parametrize('username,email,password', [(data[5].values())])
+    def test_unblock_user(self, parametrized_fixture):
+        username, email, password = parametrized_fixture.values()
         self.api_client.reg(username, email, password, password)
 
         self.api_client.login(self.api_client.user, self.api_client.password)
@@ -181,8 +172,9 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,email,password', [(data[6].values())])
-    def test_reg(self, username, email, password):
+    # @pytest.mark.parametrize('username,email,password', [(data[6].values())])
+    def test_reg(self, parametrized_fixture):
+        username, email, password = parametrized_fixture.values()
         response = self.api_client.reg(username, email, password, password)
         assert response.status_code == 200
 
@@ -196,16 +188,19 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,password', [(data[7]['username'], data[7]['password'])])
-    def test_reg_repeated_email(self, username, password):
+    # @pytest.mark.parametrize('username,password', [(data[7]['username'], data[7]['password'])])
+    def test_reg_repeated_email(self, parametrized_fixture):
+        username, _, password = parametrized_fixture.values()
         response = self.api_client.reg(username, self.api_client.email, password, password)
         assert response.status_code == 400  # TODO: сервер выдает 500
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    @pytest.mark.parametrize('username,email,password', [(data[0]['username'], data[8]['email'], data[8]['password'])])
-    def test_reg_409(self, username, email, password):
-        response = self.api_client.reg(username, email, password, password)
+    # @pytest.mark.parametrize('username,email,password', [(data[0]['username'], data[8]['email'],
+    # data[8]['password'])])
+    def test_reg_409(self, parametrized_fixture):
+        username, email, password = parametrized_fixture.values()
+        response = self.api_client.reg(self.api_client.user, email, password, password)
 
         self.api_client.del_user(username)
 

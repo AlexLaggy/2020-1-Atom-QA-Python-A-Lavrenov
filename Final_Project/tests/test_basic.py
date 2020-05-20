@@ -4,17 +4,8 @@ import json
 from tests.base import BaseCase
 
 
-data = []
-
-
-def collect_data():
-    with open('data.txt') as f:
-        data.extend(json.loads(f.read())[500:])
-
-
 @pytest.mark.usefixtures("take_screenshot_when_failure")
 class Test(BaseCase):
-    collect_data()
 
     # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
@@ -31,8 +22,9 @@ class Test(BaseCase):
 
     # @pytest.mark.skip("TEMP")
     @pytest.mark.UI
-    @pytest.mark.parametrize('username,email,password', [data[0].values()])
-    def test_login_status_after_registration(self, username, email, password):
+    # @pytest.mark.parametrize('username,email,password', [data[0].values()])
+    def test_login_status_after_registration(self, parametrized_fixture):
+        username, email, password = parametrized_fixture.values()
         self.reg_page.click(self.reg_page.locators.GO_REG_BUTTON)
         self.reg_page.search(username, self.reg_page.locators.USERNAME_LOCATOR)
         self.reg_page.search(email, self.reg_page.locators.EMAIL_LOCATOR)
@@ -52,9 +44,10 @@ class Test(BaseCase):
 
     @pytest.mark.UI
     # @pytest.mark.skip(reason="TEMP")
-    @pytest.mark.parametrize('username,email,password',
-                             [data[1].values()])
-    def test_registry_success(self, username, email, password):
+    # @pytest.mark.parametrize('username,email,password',
+    #                          [data[1].values()])
+    def test_registry_success(self, parametrized_fixture):
+        username, email, password = parametrized_fixture.values()
         self.reg_page.click(self.reg_page.locators.GO_REG_BUTTON)
         self.reg_page.search(username, self.reg_page.locators.USERNAME_LOCATOR)
         self.reg_page.search(email, self.reg_page.locators.EMAIL_LOCATOR)
@@ -64,15 +57,17 @@ class Test(BaseCase):
         self.reg_page.click(self.reg_page.locators.SUBMIT_BUTTON_LOCATOR)
 
         self.reg_page.find(self.reg_page.locators.LOGIN_CONTROLS_MAIN_PAGE, timeout=3)
-        assert "powered by ТЕХНОАТОМ" in self.driver.page_source
 
         self.db.session.query(self.db.table).filter(self.db.table.username == username).delete()
+        assert "powered by ТЕХНОАТОМ" in self.driver.page_source
 
     @pytest.mark.UI
     # @pytest.mark.skip(reason="TEMP")
-    @pytest.mark.parametrize('username,email,password',
-                             [(data[2]['username'], 'testit@test.t', data[2]['password'])])
-    def test_registry_error_country_email(self, username, email, password):
+    # @pytest.mark.parametrize('username,email,password',
+    #                          [(data[2]['username'], 'testit@test.t', data[2]['password'])])
+    def test_registry_error_country_email(self, parametrized_fixture):
+        username, email, password = parametrized_fixture.values()
+        email = email[:email.rfind('.')] + '.r'
         self.reg_page.click(self.reg_page.locators.GO_REG_BUTTON)
         self.reg_page.search(username, self.reg_page.locators.USERNAME_LOCATOR)
         self.reg_page.search(email, self.reg_page.locators.EMAIL_LOCATOR)
@@ -85,9 +80,11 @@ class Test(BaseCase):
 
     @pytest.mark.UI
     # @pytest.mark.skip(reason="TEMP")
-    @pytest.mark.parametrize('username,email,password',
-                             [('Auto', data[3]['email'], data[3]['password'])])
-    def test_registry_error_length_username(self, username, email, password):
+    # @pytest.mark.parametrize('username,email,password',
+    #                          [('Auto', data[3]['email'], data[3]['password'])])
+    def test_registry_error_length_username(self, parametrized_fixture):
+        username, email, password = parametrized_fixture.values()
+        username = username[:4]
         self.reg_page.click(self.reg_page.locators.GO_REG_BUTTON)
         self.reg_page.search(username, self.reg_page.locators.USERNAME_LOCATOR)
         self.reg_page.search(email, self.reg_page.locators.EMAIL_LOCATOR)
