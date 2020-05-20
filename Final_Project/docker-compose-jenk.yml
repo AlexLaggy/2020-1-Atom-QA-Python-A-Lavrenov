@@ -17,8 +17,7 @@ services:
       MYSQL_PASSWORD: 'qa_test'
       MYSQL_ROOT_PASSWORD: "example"
     image: "mysql:latest"
-    volumes:
-      - ./path/mysql.sql:/docker-entrypoint-initdb.d/mysql.sql
+    build: ./path
     ports:
       - "3306:3306"
 #    command: "mysql --user=root --password=example --execute=mysql.sql"
