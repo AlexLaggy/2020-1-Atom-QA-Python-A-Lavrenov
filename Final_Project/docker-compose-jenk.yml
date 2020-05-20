@@ -33,7 +33,7 @@ services:
     networks:
       - selenoid
     volumes:
-      - ./mock:/mock
+      - $WORKSPACE/src/Final_Project/mock:/mock
     ports:
       - "5000:5000"
     links:
@@ -51,7 +51,7 @@ services:
     ports:
       - "5555:5555"
     volumes:
-      - ./path:/config
+      - $WORKSPACE/src/Final_Project/path:/config
     links:
       - "mysql_database:mysql_database"
       - "mock:mock"
