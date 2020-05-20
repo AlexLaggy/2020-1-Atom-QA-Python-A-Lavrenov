@@ -32,8 +32,8 @@ services:
     container_name: "mock"
     networks:
       - selenoid
-#    volumes:
-#      - /var/jenkins_home/workspace/test_project/src/Final_Project/mock:/mock
+    volumes:
+      - /var/jenkins_home/workspace/test_project/src/Final_Project/mock:/mock
     ports:
       - "5000:5000"
     links:
