@@ -18,10 +18,9 @@ services:
       MYSQL_ROOT_PASSWORD: "example"
     image: "mysql:latest"
     volumes:
-      - ./path/mysql.sql:/docker-entrypoint-initdb.d/mysql.sql
+      - /mysql.sql:/docker-entrypoint-initdb.d/mysql.sql
     ports:
       - "3306:3306"
-#    command: "mysql --user=root --password=example --execute=mysql.sql"
     healthcheck:
       test: ["CMD", "mysqladmin" ,"-uroot", "-ppass", "ping", "-h", "127.0.0.1"]
       timeout: 20s
