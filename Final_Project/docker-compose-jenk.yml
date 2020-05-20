@@ -33,7 +33,8 @@ services:
     networks:
       - selenoid
     volumes:
-      - /var/jenkins_home/workspace/test_project/src/Final_Project/mock:/mock
+#      - /var/jenkins_home/workspace/test_project/src/Final_Project/mock:/mock
+      - /Users/albatros/PycharmProjects/Atom-QA-Python/Final_Project/mock/:/mock/
     ports:
       - "5000:5000"
     links:
