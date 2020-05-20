@@ -32,8 +32,8 @@ services:
     container_name: "mock"
     networks:
       - selenoid
-    volumes:
-      - /var/jenkins_home/workspace/test_project/src/Final_Project/mock:/mock
+#    volumes:
+#      - /var/jenkins_home/workspace/test_project/src/Final_Project/mock:/mock
     ports:
       - "5000:5000"
     links:
@@ -51,11 +51,12 @@ services:
     ports:
       - "5555:5555"
     volumes:
-      - /var/jenkins_home/workspace/test_project/src/Final_Project/path:/config
+#      - /var/jenkins_home/workspace/test_project/src/Final_Project/path/config.conf:/config.conf
+      - /Users/albatros/PycharmProjects/Atom-QA-Python/Final_Project/path/config.conf:/config.conf
     links:
       - "mysql_database:mysql_database"
       - "mock:mock"
-    command: "/app/myapp --config=/config/config.conf"
+    command: "/app/myapp --config=/config.conf"
     depends_on:
       mysql_database:
         condition: service_healthy
