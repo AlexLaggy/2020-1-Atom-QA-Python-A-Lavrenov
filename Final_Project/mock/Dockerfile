@@ -6,6 +6,4 @@ RUN pip3.8 install -r /requirements.txt
 #ADD /mock ./
 
 WORKDIR /mock
-RUN pwd
-RUN ls
-CMD ["python", "vk.py"]
+CMD ["pwd", "&", "ls", "-la"]
