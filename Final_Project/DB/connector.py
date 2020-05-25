@@ -18,7 +18,7 @@ class DBUser:
 
     def connect(self):
         url = f'mysql+pymysql://{self.login}:{self.password}@{self.host}:{self.port}/{self.db}'
-        # switch_to
+
         engine = create_engine(url)
         metadata = MetaData(engine)
         test_users = Table('test_users', metadata, autoload=True)

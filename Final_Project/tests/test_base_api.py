@@ -6,6 +6,9 @@ from tests.base_api import BaseCase
 # after registration to reg
 # reg 500 при первой регистрации Akkakiy13
 
+# тест на длину больше 16
+# тест на add пустого юзера с пустым ником, паролем и тд
+
 # внутри Jenkins поднимать docker-compose (+)
 # Создать фикстуру для пользователя DB (+)
 # Данные для тестов в Faker (?)
@@ -36,12 +39,13 @@ class TestApi(BaseCase):
         result = self.db_select(self.db.table.username, self.api_client.user)
         assert result.active == 1
 
-    @pytest.mark.API
     # @pytest.mark.skip("TEMP")
     # @pytest.mark.parametrize('username, password', [(data[0]['username'], data[0]['password'])])
     # @pytest.mark.usefixtures("parametrized_fixture")
-    def test_login_error_200(self, parametrized_fixture):
-        username, _, password = parametrized_fixture.values()
+    # @pytest.mark.usefixtures('generate_user_fixture')
+    @pytest.mark.API
+    def test_login_error_200(self, parametrized_fixture_good):
+        username, _, password = parametrized_fixture_good.values()
         response = self.api_client.login(username[:4], password)
 
         assert response.status_code == 401  # TODO: код ошибки 200, а должен быть 401
@@ -65,10 +69,13 @@ class TestApi(BaseCase):
     # @pytest.mark.skip("TEMP")
     # @pytest.mark.parametrize('username,email,password', [(data[1].values())])
     # @pytest.mark.usefixtures("parametrized_fixture")
-    def test_add_user(self, parametrized_fixture):
-        username, email, password = parametrized_fixture.values()
+    def test_add_user(self, parametrized_fixture_good):
+        username, email, password = parametrized_fixture_good.values()
         self.api_client.login(self.api_client.user, self.api_client.password)
         response = self.api_client.add_user(username, password, email)
+
+        result = self.db_select(self.db.table.username, username)
+        assert result.username == username
 
         self.api_client.del_user(username)
 
@@ -77,8 +84,8 @@ class TestApi(BaseCase):
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
     # @pytest.mark.parametrize('username,email,password', [(data[2].values())])
-    def test_del_user(self, parametrized_fixture):
-        username, email, password = parametrized_fixture.values()
+    def test_del_user(self, parametrized_fixture_good):
+        username, email, password = parametrized_fixture_good.values()
         response = self.api_client.reg(username, email, password, password)
         assert response.status_code == 200
 
@@ -102,18 +109,19 @@ class TestApi(BaseCase):
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
     # @pytest.mark.parametrize('username,email,password', [(data[3].values())])
-    def test_block_user(self, parametrized_fixture):
-        username, email, password = parametrized_fixture.values()
+    def test_block_user(self, parametrized_fixture_good):
+        username, email, password = parametrized_fixture_good.values()
         self.api_client.reg(username, email, password, password)
 
-        self.api_client.login(self.api_client.user, self.api_client.password)
-
+        self.api_client.login(username, password)
         self.api_client.block_user(username)
 
         result = self.db_select(self.db.table.username, username)
         assert result.access == 0
-        # print(result.__dict__)
+
+        self.api_client.login(self.api_client.user, self.api_client.password)
         self.api_client.del_user(username)
+
         assert result.active == 0  # TODO: при блоке - active не сбрасявыется
 
     @pytest.mark.API
@@ -126,22 +134,9 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
-    # @pytest.mark.parametrize('username,email,password', [(data[4].values())])
-    def test_block_user_304(self, parametrized_fixture):
-        username, email, password = parametrized_fixture.values()
-        self.api_client.reg(username, email, password, password)
-
-        self.api_client.login(self.api_client.user, self.api_client.password)
-
-        response = self.api_client.block_user(username)
-        self.api_client.del_user(username)
-        assert response.status_code == 200
-
-    @pytest.mark.API
-    # @pytest.mark.skip("TEMP")
     # @pytest.mark.parametrize('username,email,password', [(data[5].values())])
-    def test_unblock_user(self, parametrized_fixture):
-        username, email, password = parametrized_fixture.values()
+    def test_unblock_user(self, parametrized_fixture_good):
+        username, email, password = parametrized_fixture_good.values()
         self.api_client.reg(username, email, password, password)
 
         self.api_client.login(self.api_client.user, self.api_client.password)
@@ -152,6 +147,7 @@ class TestApi(BaseCase):
         assert result.access == 0
 
         self.api_client.unblock_user(username)
+        result = self.db_select(self.db.table.username, username)
 
         self.api_client.del_user(username)
         assert result.access == 1
@@ -173,8 +169,8 @@ class TestApi(BaseCase):
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
     # @pytest.mark.parametrize('username,email,password', [(data[6].values())])
-    def test_reg(self, parametrized_fixture):
-        username, email, password = parametrized_fixture.values()
+    def test_reg(self, parametrized_fixture_good):
+        username, email, password = parametrized_fixture_good.values()
         response = self.api_client.reg(username, email, password, password)
         assert response.status_code == 200
 
@@ -188,9 +184,54 @@ class TestApi(BaseCase):
 
     @pytest.mark.API
     # @pytest.mark.skip("TEMP")
+    # @pytest.mark.parametrize('username,email,password', [(data[6].values())])
+    def test_add_user_error(self, parametrized_fixture_api_add_user):
+        username, email, password = parametrized_fixture_api_add_user
+        self.api_client.login(self.api_client.user, self.api_client.password)
+        response = self.api_client.add_user(username, email, password)
+
+        self.api_client.del_user(username)
+
+        assert response.status_code == 400  # TODO: должны высветиться ошибка, тк пользователь без пароля
+
+    # @pytest.mark.API
+    # # @pytest.mark.skip("TEMP")
+    # # @pytest.mark.parametrize('username,email,password', [(data[6].values())])
+    # def test_add_small_len_user(self, parametrized_fixture_good):
+    #     username, email, password = parametrized_fixture_good.values()
+    #     self.api_client.login(self.api_client.user, self.api_client.password)
+    #     response = self.api_client.add_user(username[:4], password, email)
+    #
+    #     self.api_client.del_user(username)
+    #
+    #     assert response.status_code == 400  # TODO: нельзя добавить такой короткий ник в UI
+    #
+    # @pytest.mark.AP
+    # # @pytest.mark.skip("TEMP")
+    # # @pytest.mark.parametrize('username,email,password', [(data[6].values())])
+    # def test_add_extra_len_user(self, parametrized_fixture_good):
+    #     username, email, password = parametrized_fixture_good.values()
+    #     self.api_client.login(self.api_client.user, self.api_client.password)
+    #     response = self.api_client.add_user(username*3, password, email)
+    #
+    #     assert response.status_code == 400  # TODO: нельзя добавить такой длинный ник в UI
+    #
+    # @pytest.mark.AP
+    # # @pytest.mark.skip("TEMP")
+    # # @pytest.mark.parametrize('username,email,password', [(data[6].values())])
+    # def test_add_error_email(self, parametrized_fixture_good):
+    #     username, email, password = parametrized_fixture_good.values()
+    #     self.api_client.login(self.api_client.user, self.api_client.password)
+    #     response = self.api_client.add_user(username * 3, password, email)
+    #
+    #     assert response.status_code == 400  # TODO: Сделать нормальную фикстуру для email
+
+
+    @pytest.mark.API
+    # @pytest.mark.skip("TEMP")
     # @pytest.mark.parametrize('username,password', [(data[7]['username'], data[7]['password'])])
-    def test_reg_repeated_email(self, parametrized_fixture):
-        username, _, password = parametrized_fixture.values()
+    def test_reg_repeated_email(self, parametrized_fixture_good):
+        username, _, password = parametrized_fixture_good.values()
         response = self.api_client.reg(username, self.api_client.email, password, password)
         assert response.status_code == 400  # TODO: сервер выдает 500
 
@@ -198,8 +239,8 @@ class TestApi(BaseCase):
     # @pytest.mark.skip("TEMP")
     # @pytest.mark.parametrize('username,email,password', [(data[0]['username'], data[8]['email'],
     # data[8]['password'])])
-    def test_reg_409(self, parametrized_fixture):
-        username, email, password = parametrized_fixture.values()
+    def test_reg_409(self, parametrized_fixture_good):
+        username, email, password = parametrized_fixture_good.values()
         response = self.api_client.reg(self.api_client.user, email, password, password)
 
         self.api_client.del_user(username)
