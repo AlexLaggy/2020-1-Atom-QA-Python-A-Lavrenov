@@ -1,5 +1,4 @@
 import pytest
-import json
 
 from tests.base import BaseCase
 
@@ -7,22 +6,18 @@ from tests.base import BaseCase
 @pytest.mark.usefixtures("take_screenshot_when_failure")
 class Test(BaseCase):
 
-    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
     def test_login(self):
         self.user_page.login()
         self.user_page.find(self.user_page.locators.LOGIN_CONTROLS_MAIN_PAGE, timeout=3)
         assert "powered by ТЕХНОАТОМ" in self.driver.page_source
 
-    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
     def test_login_error(self):
         self.user_page.login(False)
         assert "Invalid username or password" in self.driver.page_source
 
-    # @pytest.mark.skip("TEMP")
     @pytest.mark.UI
-    # @pytest.mark.parametrize('username,email,password', [data[0].values()])
     def test_login_status_after_registration(self, parametrized_fixture_good):
         username, email, password = parametrized_fixture_good.values()
         self.reg_page.click(self.reg_page.locators.GO_REG_BUTTON)
@@ -43,9 +38,6 @@ class Test(BaseCase):
         assert user.active == 1  # TODO: мы уже на странице, а следовательно статус в базе должен быть 1
 
     @pytest.mark.UI
-    # @pytest.mark.skip(reason="TEMP")
-    # @pytest.mark.parametrize('username,email,password',
-    #                          [data[1].values()])
     def test_registry_success(self, parametrized_fixture_good):
         username, email, password = parametrized_fixture_good.values()
         self.reg_page.click(self.reg_page.locators.GO_REG_BUTTON)
@@ -62,9 +54,6 @@ class Test(BaseCase):
         assert "powered by ТЕХНОАТОМ" in self.driver.page_source
 
     @pytest.mark.UI
-    # @pytest.mark.skip(reason="TEMP")
-    # @pytest.mark.parametrize('username,email,password',
-    #                          [(data[2]['username'], 'testit@test.t', data[2]['password'])])
     def test_registry_error_country_email(self, parametrized_fixture_good):
         username, email, password = parametrized_fixture_good.values()
         email = email[:email.rfind('.')] + '.r'
@@ -79,9 +68,6 @@ class Test(BaseCase):
         assert "Incorrect email" in self.driver.page_source  # TODO: должна быть ошибка, тк нету 1 буквы в расширении
 
     @pytest.mark.UI
-    # @pytest.mark.skip(reason="TEMP")
-    # @pytest.mark.parametrize('username,email,password',
-    #                          [('Auto', data[3]['email'], data[3]['password'])])
     def test_registry_error_length_username(self, parametrized_fixture_good):
         username, email, password = parametrized_fixture_good.values()
         username = username[:4]
@@ -95,7 +81,6 @@ class Test(BaseCase):
 
         assert "Incorrect username" in self.driver.page_source
 
-    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
     def test_main_carousel_bug(self):
         self.user_page.login()
@@ -103,7 +88,6 @@ class Test(BaseCase):
         self.main_page.click(self.main_page.locators.BUG_BUTTON)
         assert "powered by ТЕХНОАТОМ" in self.driver.page_source
 
-    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
     def test_main_carousel_home(self):
         self.user_page.login()
@@ -111,7 +95,6 @@ class Test(BaseCase):
         self.main_page.click(self.main_page.locators.HOME_BUTTON)
         assert "powered by ТЕХНОАТОМ" in self.driver.page_source
 
-    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
     def test_main_carousel_linux(self):
         self.user_page.login()
@@ -120,7 +103,6 @@ class Test(BaseCase):
         self.main_page.find(self.main_page.locators.AREA_EXPANDED_LINUX)
         assert "powered by ТЕХНОАТОМ" in self.driver.page_source
 
-    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
     def test_main_carousel_linux_download(self):
         self.user_page.login()
@@ -134,7 +116,6 @@ class Test(BaseCase):
 
         assert "Centos" in self.driver.page_source  # TODO: должен быть Centos, а там Fedora
 
-    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
     def test_main_carousel_network(self):
         self.user_page.login()
@@ -145,7 +126,6 @@ class Test(BaseCase):
 
         assert "powered by ТЕХНОАТОМ" in self.driver.page_source
 
-    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
     def test_main_carousel_network_news(self):
         self.user_page.login()
@@ -160,7 +140,6 @@ class Test(BaseCase):
 
         assert "I have a lot of traffic" in self.driver.page_source
 
-    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
     def test_main_carousel_network_download(self):
         self.user_page.login()
@@ -175,7 +154,6 @@ class Test(BaseCase):
 
         assert "current stable release" in self.driver.page_source
 
-    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
     def test_main_carousel_network_tcpdump(self):
         self.user_page.login()
@@ -190,7 +168,6 @@ class Test(BaseCase):
 
         assert "troubleshooting" in self.driver.page_source
 
-    # @pytest.mark.skip(reason="TEMP")
     @pytest.mark.UI
     def test_main_carousel_python_click(self):
         self.user_page.login()
@@ -199,8 +176,7 @@ class Test(BaseCase):
 
         assert "powered by ТЕХНОАТОМ" in self.driver.page_source  # TODO: должен был открыться выпадающий список
 
-    # @pytest.mark.skip(reason="WTF")
-    @pytest.mark.U
+    @pytest.mark.UI
     def test_laptop_icon(self):
         self.user_page.login()
 
@@ -211,8 +187,7 @@ class Test(BaseCase):
 
         assert "Wikipedia" in self.driver.page_source
 
-    # @pytest.mark.skip(reason="WTF")
-    @pytest.mark.U
+    @pytest.mark.UI
     def test_smtp_icon(self):
         self.user_page.login()
 
@@ -223,8 +198,7 @@ class Test(BaseCase):
 
         assert "Wikipedia" in self.driver.page_source
 
-    # @pytest.mark.skip(reason="WTF")
-    @pytest.mark.U
+    @pytest.mark.UI
     def test_lens_icon(self):
         self.user_page.login()
 
