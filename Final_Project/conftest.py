@@ -16,22 +16,22 @@ class UsupportedBrowserException(Exception):
 
 
 def pytest_addoption(parser):
-    # parser.addoption('--url', default='http://uselessapp:5555')
-    parser.addoption('--url', default='http://0.0.0.0:5555')
+    parser.addoption('--url', default='http://uselessapp:5555')
+    # parser.addoption('--url', default='http://0.0.0.0:5555')
     parser.addoption('--browser', default='chrome')
     parser.addoption('--browser_ver', default='latest')
     parser.addoption('--login', default='Akkakiy13')
     parser.addoption('--password', default='qwe')
     parser.addoption('--email', default='yas@ya.ru')
-    # parser.addoption('--selenoid', default='selenoid:4444')
+    parser.addoption('--selenoid', default='selenoid:4444')
     # parser.addoption('--selenoid', default='0.0.0.0:4444')
-    parser.addoption('--selenoid', default=None)
+    # parser.addoption('--selenoid', default=None)
 
     parser.addoption('--db_user', default='test_qa')
     parser.addoption('--db_password', default='qa_test')
     parser.addoption('--db_name', default='test')
-    # parser.addoption('--db_host', default='mysql_database')
-    parser.addoption('--db_host', default='0.0.0.0')
+    parser.addoption('--db_host', default='mysql_database')
+    # parser.addoption('--db_host', default='0.0.0.0')
     parser.addoption('--db_port', default='3306')
 
 
@@ -106,7 +106,6 @@ def generate_user(dong=0):
     while len(user) < 7 or len(user) > 15 or len(email) < 7:
         user = fake.user_name()
         email = fake.ascii_email()
-        print(user)
     data = {
         'username': user,
         'email': email,
@@ -127,21 +126,21 @@ def parametrized_fixture_good(request):
 
 @pytest.fixture(params=[1, 2, 3, 4, 5, 6])
 def parametrized_fixture_api_add_user(request):
-    if request == 1:
-        username, email, password = request.getfixturevalue('user_fixture')
+    if request.param == 1:
+        username, email, password = request.getfixturevalue('user_fixture').values()
         return username*3, email, password
-    elif request == 2:
-        username, email, password = request.getfixturevalue('user_fixture')
+    elif request.param == 2:
+        username, email, password = request.getfixturevalue('user_fixture').values()
         return username, '', password
-    elif request == 3:
-        username, email, password = request.getfixturevalue('user_fixture')
+    elif request.param == 3:
+        username, email, password = request.getfixturevalue('user_fixture').values()
         return username, email, None
-    elif request == 4:
-        username, email, password = request.getfixturevalue('user_fixture')
+    elif request.param == 4:
+        username, email, password = request.getfixturevalue('user_fixture').values()
         return username[:4], email, password
-    elif request == 5:
-        username, email, password = request.getfixturevalue('user_fixture')
+    elif request.param == 5:
+        username, email, password = request.getfixturevalue('user_fixture').values()
         return username, 'itsnotemail', password
     else:
-        username, email, password = request.getfixturevalue('user_fixture')
+        username, email, password = request.getfixturevalue('user_fixture').values()
         return username, 't@t.t', password
