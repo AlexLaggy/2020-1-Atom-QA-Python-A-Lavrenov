@@ -5,7 +5,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from ui.locators.basic_locators import BaseLocators
 
-RETRY_COUNT = 3
+RETRY_COUNT = 6
 
 
 class BasePage:
@@ -45,7 +45,7 @@ class BasePage:
 
     def wait(self, timeout=None):
         if timeout is None:
-            timeout = 10
+            timeout = 5
         return WebDriverWait(self.driver, timeout=timeout)
 
     def search(self, query, locator):

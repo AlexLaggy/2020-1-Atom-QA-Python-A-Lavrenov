@@ -200,7 +200,7 @@ class Test(BaseCase):
         assert "powered by ТЕХНОАТОМ" in self.driver.page_source  # TODO: должен был открыться выпадающий список
 
     # @pytest.mark.skip(reason="WTF")
-    @pytest.mark.UI
+    @pytest.mark.U
     def test_laptop_icon(self):
         self.user_page.login()
 
@@ -212,7 +212,7 @@ class Test(BaseCase):
         assert "Wikipedia" in self.driver.page_source
 
     # @pytest.mark.skip(reason="WTF")
-    @pytest.mark.UI
+    @pytest.mark.U
     def test_smtp_icon(self):
         self.user_page.login()
 
@@ -224,7 +224,7 @@ class Test(BaseCase):
         assert "Wikipedia" in self.driver.page_source
 
     # @pytest.mark.skip(reason="WTF")
-    @pytest.mark.UI
+    @pytest.mark.U
     def test_lens_icon(self):
         self.user_page.login()
 
