@@ -5,7 +5,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from ui.locators.basic_locators import BaseLocators
 
-RETRY_COUNT = 6
+RETRY_COUNT = 8
 
 
 class BasePage:

@@ -1,7 +1,7 @@
 import threading
 import json
 
-from flask import Flask, request, abort
+from flask import Flask, request
 
 app = Flask(__name__)
 
@@ -32,7 +32,7 @@ def get_vk_id(username: str):
     if user_id is not None:
         return json.dumps({'vk_id': str(user_id)}), 200
     else:
-        abort(404)
+        return {}, 404
 
 
 @app.route('/shutdown')
