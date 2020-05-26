@@ -27,7 +27,7 @@ def create_user():
 
 @app.route('/vk_id/<username>')
 def get_vk_id(username: str):
-    user_id = users.get(username)
+    user_id = users.get(str(username))
     if user_id:
         return {'vk_id': user_id}, 200
     else:
