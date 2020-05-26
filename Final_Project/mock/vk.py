@@ -19,11 +19,6 @@ def shutdown_mock():
         terminate_func()
 
 
-def db_select(self, field, value):
-    self.db.session.expire_all()
-    return self.db.session.query(self.db.table).filter(field == value).first()
-
-
 @app.route('/vk_id', methods=['POST'])
 def create_user():
     user = request.form['user']
