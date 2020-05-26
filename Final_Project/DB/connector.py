@@ -24,7 +24,7 @@ class DBUser:
         test_users = Table('test_users', metadata, autoload=True)
         mapper(Users, test_users)
 
-        session = sessionmaker(bind=engine, autocommit=True, enable_baked_queries=False, expire_on_commit=False)
+        session = sessionmaker(bind=engine, autocommit=True, enable_baked_queries=False)
 
         return session()
 

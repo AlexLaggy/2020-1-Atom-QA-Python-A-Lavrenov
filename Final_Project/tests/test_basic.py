@@ -33,6 +33,7 @@ class Test(BaseCase):
 
         user = self.db.session.query(self.db.table).filter(self.db.table.username == username).first()
 
+        print(user.__dict__)
         self.db.session.query(self.db.table).filter(self.db.table.username == username).delete()
 
         assert user.active == 1  # TODO: мы уже на странице, а следовательно статус в базе должен быть 1
