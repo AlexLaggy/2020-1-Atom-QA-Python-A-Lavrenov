@@ -29,7 +29,7 @@ def create_user():
 def get_vk_id(username: str):
     user_id = users.get(username)
     if user_id is not None:
-        return {'vk_id': user_id}, 200
+        return {'vk_id': str(user_id)}, 200
     else:
         abort(404)
 
