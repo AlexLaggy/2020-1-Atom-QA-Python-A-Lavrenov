@@ -31,8 +31,8 @@ def main_page(driver):
 
 
 @pytest.fixture(scope='function')
-def user_page(driver, config):
-    return UserPage(driver, config['login'], config['password'])
+def user_page(driver, create_db_user):
+    return UserPage(driver, create_db_user['login'], create_db_user['password'])
 
 
 @pytest.fixture(scope='function')
@@ -49,8 +49,6 @@ def driver(config):
 
         prefs = {"download.default_directory": download_dir}
         options.add_experimental_option('prefs', prefs)
-        options.add_argument('--ignore-certificate-errors')
-        options.add_argument('--allow-insecure-localhost')
         if selenoid:
             capabilities = {'acceptInsecureCerts': True,
                             'browserName': 'chrome',

@@ -20,9 +20,6 @@ def pytest_addoption(parser):
     # parser.addoption('--url', default='http://0.0.0.0:5555')
     parser.addoption('--browser', default='chrome')
     parser.addoption('--browser_ver', default='latest')
-    parser.addoption('--login', default='Akkakiy13')
-    parser.addoption('--password', default='qwe')
-    parser.addoption('--email', default='yas@ya.ru')
     parser.addoption('--selenoid', default='selenoid:4444')
     # parser.addoption('--selenoid', default='0.0.0.0:4444')
     # parser.addoption('--selenoid', default=None)
@@ -40,9 +37,9 @@ def config(request):
     url = request.config.getoption('--url')
     browser = request.config.getoption('--browser')
     version = request.config.getoption('--browser_ver')
-    login = request.config.getoption('--login')
-    password = request.config.getoption('--password')
-    email = request.config.getoption('--email')
+    # login = request.config.getoption('--login')
+    # password = request.config.getoption('--password')
+    # email = request.config.getoption('--email')
     selenoid = request.config.getoption('--selenoid')
 
     db_user = request.config.getoption('--db_user')
@@ -53,7 +50,7 @@ def config(request):
 
     return {'browser': browser, 'version': version, 'url': url,
             'db_user': db_user, 'db_password': db_password, 'db_name': db_name, 'db_host': db_host, 'db_port': db_port,
-            'download_dir': '/tmp', 'login': login, 'password': password, 'selenoid': selenoid, 'email': email}
+            'download_dir': '/tmp', 'selenoid': selenoid}
 
 
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
@@ -76,26 +73,27 @@ def take_screenshot_when_failure(request, driver):
                       attachment_type=allure.attachment_type.PNG)
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='session')
 def create_db_user(config):
+    user, email, password = generate_user(random.randint(1, 1000)).values()
     session = requests.Session()
     data = {
-        "username": config['login'],
-        "email": config['email'],
-        "password": config['password'],
-        "confirm": config['password'],
+        "username": user,
+        "email": email,
+        "password": password,
+        "confirm": password,
         "term": "y",
         "submit": "Register"
     }
     session.request('POST', f'{config["url"]}/reg', data=data)
-    yield
+    yield {'login': user, 'email': email, 'password': password}
     data = {
-        "username": config['login'],
-        "password": config['password'],
+        "username": user,
+        "password": password,
         "submit": "Login"
     }
     session.request('POST', f'{config["url"]}/login', data=data)
-    session.request('GET', f'{config["url"]}/api/del_user/{config["login"]}', data=data)
+    session.request('GET', f'{config["url"]}/api/del_user/{user}', data=data)
 
 
 def generate_user(dong=0):
@@ -114,7 +112,7 @@ def generate_user(dong=0):
     return data
 
 
-@pytest.fixture()
+@pytest.fixture(scope='session')
 def user_fixture():
     return generate_user(random.randint(1, 1000))
 
