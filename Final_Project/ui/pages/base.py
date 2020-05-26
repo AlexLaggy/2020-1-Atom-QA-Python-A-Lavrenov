@@ -1,4 +1,5 @@
 from selenium.common.exceptions import StaleElementReferenceException
+from selenium.webdriver import ActionChains
 from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
@@ -52,3 +53,9 @@ class BasePage:
         search_field = self.find(locator)
         search_field.clear()
         search_field.send_keys(query)
+
+    def move(self, chain, locator):
+        action = ActionChains(self.driver)
+        elem = self.find(chain)
+        action.move_to_element(elem).perform()
+        self.click(locator)

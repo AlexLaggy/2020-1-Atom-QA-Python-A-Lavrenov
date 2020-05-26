@@ -108,9 +108,8 @@ class Test(BaseCase):
     def test_main_carousel_linux_download(self):
         self.user_page.login()
 
-        self.main_page.click(self.main_page.locators.LINUX_BUTTON)
-        self.main_page.click(self.main_page.locators.LINUX_BUTTON)
-        self.main_page.click(self.main_page.locators.LINUX_DOWNLOAD)
+        self.main_page.move(self.main_page.locators.LINUX_BUTTON,
+                            self.main_page.locators.LINUX_DOWNLOAD)
 
         window_after = self.driver.window_handles[1]
         self.driver.switch_to.window(window_after)
@@ -131,10 +130,8 @@ class Test(BaseCase):
     def test_main_carousel_network_news(self):
         self.user_page.login()
 
-        self.main_page.click(self.main_page.locators.NETWORK_BUTTON)
-        self.main_page.click(self.main_page.locators.NETWORK_BUTTON)
-
-        self.main_page.click(self.main_page.locators.NETWORK_NEWS)
+        self.main_page.move(self.main_page.locators.NETWORK_BUTTON,
+                            self.main_page.locators.NETWORK_NEWS)
 
         window_after = self.driver.window_handles[1]
         self.driver.switch_to.window(window_after)
@@ -145,10 +142,8 @@ class Test(BaseCase):
     def test_main_carousel_network_download(self):
         self.user_page.login()
 
-        self.main_page.click(self.main_page.locators.NETWORK_BUTTON)
-        self.main_page.click(self.main_page.locators.NETWORK_BUTTON)
-
-        self.main_page.click(self.main_page.locators.NETWORK_DOWNLOAD)
+        self.main_page.move(self.main_page.locators.NETWORK_BUTTON,
+                            self.main_page.locators.NETWORK_DOWNLOAD)
 
         window_after = self.driver.window_handles[1]
         self.driver.switch_to.window(window_after)
@@ -159,10 +154,8 @@ class Test(BaseCase):
     def test_main_carousel_network_tcpdump(self):
         self.user_page.login()
 
-        self.main_page.click(self.main_page.locators.NETWORK_BUTTON)
-        self.main_page.click(self.main_page.locators.NETWORK_BUTTON)
-
-        self.main_page.click(self.main_page.locators.NETWORK_TCPDUMP)
+        self.main_page.move(self.main_page.locators.NETWORK_BUTTON,
+                            self.main_page.locators.NETWORK_TCPDUMP)
 
         window_after = self.driver.window_handles[1]
         self.driver.switch_to.window(window_after)
