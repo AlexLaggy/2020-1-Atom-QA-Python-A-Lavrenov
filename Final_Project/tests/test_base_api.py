@@ -2,20 +2,6 @@ import pytest
 
 from tests.base_api import BaseCase
 
-# 308 redirect=False to Home
-# after registration to reg
-# reg 500 при первой регистрации Akkakiy13
-
-# тест на длину больше 16
-# тест на add пустого юзера с пустым ником, паролем и тд
-
-# внутри Jenkins поднимать docker-compose (+)
-# Создать фикстуру для пользователя DB (+)
-# Данные для тестов в Faker (+)
-# Timeout для selenoid (+)
-# Вернуть скриншоты, но только на UI (+)
-# Многопоточный запуск тест
-
 
 class TestApi(BaseCase):
 
@@ -168,7 +154,7 @@ class TestApi(BaseCase):
 
         self.api_client.del_user(username)
 
-        assert response.status_code == 400
+        assert response.status_code == 400  # TODO: ошибка при добавлении неправильных данных в пользователе
 
     @pytest.mark.API
     def test_reg_repeated_email(self, parametrized_fixture_good):
